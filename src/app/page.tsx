@@ -112,8 +112,8 @@ export default function Home() {
       <section className="text-center py-10 px-6">
         <h2 className="text-2xl font-bold mb-4">LETS CHAT</h2>
         <p className="max-w-xl mx-auto text-gray-400 mb-6">
-          JOIN THE MISSION. COMMIT TO SHINING. BE REMINDED YOU'RE CALLED TO LIGHT UP
-          EVERY SPACE YOU STEP INTO. LET THIS BE A SYMBOL THAT YOU AREN'T WALKING ALONE
+          JOIN THE MISSION. COMMIT TO SHINING. BE REMINDED YOU&apos;RE CALLED TO LIGHT UP
+          EVERY SPACE YOU STEP INTO. LET THIS BE A SYMBOL THAT YOU AREN&apos;T WALKING ALONE
           BUT WITH THE ONE WHO GOES AHEAD OF YOU.
         </p>
         <div className="flex justify-center space-x-4">

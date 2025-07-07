@@ -1,92 +1,115 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { Lock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [isRegistering, setIsRegistering] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isRegistering, setIsRegistering] = useState(false);  // false means login, true means registration
 
-  useEffect(() => {
-    const isAdmin = localStorage.getItem('isAdmin');
-    if (isAdmin === 'true') {
-      router.push('/admin');
-    }
-  }, [router]);
-
-  const handleLogin = (e: React.FormEvent) => {
+  // Handle login functionality
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const storedEmail = localStorage.getItem('adminEmail');
-    const storedPassword = localStorage.getItem('adminPassword');
 
-    if (email === storedEmail && password === storedPassword) {
-      localStorage.setItem('isAdmin', 'true');
-      router.push('/admin');
-    } else {
-      alert('Invalid credentials');
+    try {
+      const response = await fetch('/api/login', {  // Ensure the login API is '/api/admin/login'
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem('isAdmin', 'true');  // Set isAdmin flag in localStorage
+        router.push('/admin');  // Redirect to the admin page after successful login
+      } else {
+        alert(result.error || 'Invalid credentials');
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      alert('An error occurred during login');
     }
   };
 
-  const handleRegister = (e: React.FormEvent) => {
-    e.preventDefault();
-    localStorage.setItem('adminEmail', email);
-    localStorage.setItem('adminPassword', password);
-    localStorage.setItem('isAdmin', 'true');
-    router.push('/admin');
+  // Navigate to the registration page when the user clicks "Sign Up"
+  const handleNavigateToSignup = () => {
+    router.push('/signup');  // Navigate to signup page
   };
 
   return (
-    <main className="min-h-screen bg-black text-white flex items-center justify-center px-4">
-      <form
-        onSubmit={isRegistering ? handleRegister : handleLogin}
-        className="bg-zinc-900 p-8 rounded-xl shadow-lg w-full max-w-md space-y-6"
-      >
-        <h1 className="text-2xl font-bold text-center">
-          {isRegistering ? 'Admin Signup' : 'Admin Login'}
-        </h1>
-
-        <div>
-          <label className="block text-sm font-medium mb-1">Email</label>
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            className="w-full px-4 py-2 bg-zinc-800 border border-gray-600 rounded text-white"
-          />
+    <div className="min-h-screen bg-black flex items-center justify-center px-4">
+      <div className="max-w-md w-full space-y-8 p-8 bg-zinc-900 rounded-2xl shadow-lg">
+        <div className="text-center">
+          <h1 className="text-3xl sm:text-4xl font-koulen text-white mb-2">
+            <Lock className="inline w-6 h-6 mr-1" />
+            {isRegistering ? 'Admin Signup' : 'Admin Login'}
+          </h1>
+          <p className="text-sm text-gray-400">
+            {isRegistering ? 'Let your light shine in every space' : 'Reignite your glow'}
+          </p>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-1">Password</label>
-          <input
-            type="password"
-            required
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            className="w-full px-4 py-2 bg-zinc-800 border border-gray-600 rounded text-white"
-          />
-        </div>
+        <form className="space-y-6" onSubmit={handleLogin}>
+          <div>
+            <label className="block text-sm font-medium mb-1">Email</label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              placeholder="you@example.com"
+            />
+          </div>
 
-        <button
-          type="submit"
-          className="w-full bg-yellow-500 text-black font-bold py-2 rounded hover:bg-yellow-400"
-        >
-          {isRegistering ? 'Sign Up' : 'Log In'}
-        </button>
+          <div>
+            <label className="block text-sm font-medium mb-1">Password</label>
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              placeholder="Protect the flame"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-red-500 text-black font-bold py-2 rounded hover:bg-red-500"
+          >
+            Log In
+          </button>
+        </form>
 
         <p className="text-center text-sm text-gray-400">
-          {isRegistering ? 'Already have an account?' : "Don't have an account?"}{' '}
-          <button
-            type="button"
-            onClick={() => setIsRegistering(!isRegistering)}
-            className="text-yellow-400 underline ml-1"
-          >
-            {isRegistering ? 'Log In' : 'Sign Up'}
-          </button>
+          {isRegistering ? (
+            <>Already registered?{' '}
+              <button
+                type="button"
+                onClick={() => setIsRegistering(false)}  // Toggle to Login form
+                className="text-red-400 underline ml-1"
+              >
+                Login
+              </button></>
+          ) : (
+            <>Don’t have an account?{' '}
+              <button
+                type="button"
+                onClick={handleNavigateToSignup}  // Navigate to signup page
+                className="text-red-400 underline ml-1"
+              >
+                Sign Up
+              </button></>
+          )}
         </p>
-      </form>
-    </main>
+      </div>
+    </div>
   );
 }
