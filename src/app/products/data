@@ -1,0 +1,18 @@
+export const redarckproducts = [
+  {
+    id: '1',
+    title: 'LOREM IPSUM',
+    price: 'N20,000',
+    image: '/placeholder.png',
+    description: 'Lorem ipsum dolor sit amet...',
+    colors: ['/placeholder.png', '/placeholder2.png'],
+  },
+  {
+    id: '2',
+    title: 'REDEMPTION TEE',
+    price: 'N18,000',
+    image: '/placeholder2.png',
+    description: 'Inspired by grace and redemption...',
+    colors: ['/placeholder2.png', '/placeholder3.png'],
+  },
+];
