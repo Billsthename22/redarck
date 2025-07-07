@@ -20,8 +20,11 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+<<<<<<< HEAD
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.10",
+=======
+>>>>>>> 6c22dff9b5a22b17965e700010757fa49f626d91
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
