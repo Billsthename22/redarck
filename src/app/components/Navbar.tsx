@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ShoppingCart, User, Mail, Menu, X } from 'lucide-react'
@@ -8,13 +8,19 @@ import { useCart } from '@/app/Context/cartcontext'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
   const { totalQuantity, toggleCart } = useCart()
+
+  useEffect(() => {
+    const adminStatus = localStorage.getItem('isAdmin')
+    setIsAdmin(adminStatus === 'true')
+  }, [])
 
   return (
     <nav className="w-full bg-black text-white border-b border-gray-800 px-6 py-4">
       {/* Top Nav Bar */}
       <div className="flex justify-between items-center">
-        {/* Left Links (hidden on mobile) */}
+        {/* Left Links */}
         <div className="hidden md:flex items-center space-x-6">
           <Link href="/" className="font-semibold uppercase tracking-wide hover:text-red-500 transition">Home</Link>
           <Link href="/shop" className="hover:text-red-500 transition">Shop</Link>
@@ -35,13 +41,15 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Right Icons (hidden on mobile) */}
+        {/* Right Icons */}
         <div className="hidden md:flex items-center space-x-6">
-          <Link href="/signup" className="hover:text-red-500 transition">
-            <User className="w-6 h-6" />
-          </Link>
+          {isAdmin && (
+            <Link href="/signup" className="hover:text-red-500 transition">
+              <User className="w-6 h-6" />
+            </Link>
+          )}
 
-          {/* Cart Icon with badge */}
+          {/* Cart Icon */}
           <button onClick={toggleCart} className="relative hover:text-red-500 transition">
             <ShoppingCart className="w-6 h-6" />
             {totalQuantity > 0 && (
@@ -56,7 +64,7 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Mobile Menu Button (visible on mobile only) */}
+        {/* Mobile Menu Toggle */}
         <button
           className="md:hidden text-white"
           onClick={() => setIsOpen(!isOpen)}
@@ -72,11 +80,13 @@ export default function Navbar() {
           <Link href="/" className="block hover:text-red-500 transition">Home</Link>
           <Link href="/shop" className="block hover:text-red-500 transition">Shop</Link>
           <Link href="/about" className="block hover:text-red-500 transition">About</Link>
-          <Link href="/signup" className="block hover:text-red-500 transition flex items-center gap-2">
-            <User className="w-5 h-5" /> Account
-          </Link>
 
-          {/* Cart icon (mobile) with badge */}
+          {isAdmin && (
+            <Link href="/signup" className="block hover:text-red-500 transition flex items-center gap-2">
+              <User className="w-5 h-5" /> Account
+            </Link>
+          )}
+
           <button
             onClick={() => {
               toggleCart()

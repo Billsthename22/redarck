@@ -22,7 +22,7 @@ export default function CartSidebar() {
     totalAmount,
   } = useCart();
 
-  const whatsappNumber = '2349155581053'; // ✅ Replace with your own number
+  const whatsappNumber = '2349155581053'; 
 
   const handleCheckout = () => {
     const messageLines = cartItems.map(item => {

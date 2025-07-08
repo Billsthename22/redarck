@@ -9,10 +9,10 @@ export async function POST(request: NextRequest) {
     await connectDB();
 
     // Parse the request body
-    const { fullName, email, address, password } = await request.json();
+    const { fullName, email, password } = await request.json();
 
     // Validate required fields
-    if (!fullName || !email || !address || !password) {
+    if (!fullName || !email || !password) {
       return NextResponse.json(
         { error: 'All fields are required' },
         { status: 400 }
@@ -36,7 +36,6 @@ export async function POST(request: NextRequest) {
     const user = new Admin({
       fullName,
       email,
-      address,
       password: hashedPassword,
     });
 

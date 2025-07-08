@@ -27,7 +27,7 @@ export default function AdminLoginPage() {
 
       if (response.ok) {
         localStorage.setItem('isAdmin', 'true');  // Set isAdmin flag in localStorage
-        router.push('/admin');  // Redirect to the admin page after successful login
+        router.push('/adminshop');  // Redirect to the admin page after successful login
       } else {
         alert(result.error || 'Invalid credentials');
       }

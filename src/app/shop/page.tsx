@@ -1,21 +1,23 @@
 'use client';
 
 import Navbar from '../components/Navbar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
 import ProductCard from '../components/Productcard';
 
-const allProducts = Array.from({ length: 27 }).map((_, index) => ({
-  id: `${index + 1}`, // Ensure id is string to work with URL
-  imageSrc: '/placeholder.png',
-  title: `LOREM IPSUM ${index + 1}`,
-  price: '₦20,000',
-}));
-
 export default function ShopPage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [allProducts, setAllProducts] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
+
+  // Fetch products from your MongoDB via API route
+  useEffect(() => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => setAllProducts(data))
+      .catch(err => console.error('Error fetching products:', err));
+  }, []);
 
   const filteredProducts = allProducts.filter(product =>
     product.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -62,8 +64,8 @@ export default function ShopPage() {
           {paginatedProducts.length > 0 ? (
             paginatedProducts.map(product => (
               <ProductCard
-                key={product.id}
-                id={product.id} // ✅ Added this line
+                key={product._id}
+                id={product._id}
                 imageSrc={product.imageSrc}
                 title={product.title}
                 price={product.price}
@@ -77,7 +79,6 @@ export default function ShopPage() {
 
       {/* Pagination */}
       <div className="flex justify-center items-center gap-2 py-10">
-        {/* Previous Button */}
         <button
           onClick={goToPrevious}
           disabled={currentPage === 1}
@@ -90,12 +91,10 @@ export default function ShopPage() {
           &lt;
         </button>
 
-        {/* Current Page Number */}
         <button className="w-6 h-6 rounded-sm text-sm bg-red-700 text-white cursor-default">
           {currentPage}
         </button>
 
-        {/* Next Button */}
         <button
           onClick={goToNext}
           disabled={currentPage === totalPages}

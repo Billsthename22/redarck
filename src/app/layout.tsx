@@ -3,8 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import { CartProvider } from "@/app/Context/cartcontext";
-import CartSidebar from "@/app/components/CartSidebar"; // ✅ Import sidebar
-
+import CartSidebar from "@/app/components/CartSidebar"; //  Import sidebar
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link href="https://fonts.googleapis.com/css2?family=Kristi&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Leckerli+One&display=swap" rel="stylesheet" />
       </head>
+
       <body
         className={`
           ${geistSans.variable}
@@ -39,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           antialiased
         `}
       >
+        
         <CartProvider>
           {children}
           <CartSidebar /> {/* ✅ Always rendered, hidden until toggled */}
