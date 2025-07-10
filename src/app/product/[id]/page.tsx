@@ -11,8 +11,11 @@ export default function ProductPage() {
   const params = useParams();
   const productId = params?.id;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedSize, setSelectedSize] = useState('');
+  const [selectedColor, setSelectedColor] = useState('');
 
   useEffect(() => {
     if (!productId) return;
@@ -25,12 +28,35 @@ export default function ProductPage() {
       .then((data) => {
         setProduct(data);
         setLoading(false);
+        // Set default selections
+        if (data.sizes && data.sizes.length > 0) {
+          setSelectedSize(data.sizes[0]);
+        }
+        if (data.colors && data.colors.length > 0) {
+          setSelectedColor(data.colors[0]);
+        }
       })
       .catch((err) => {
         console.error(err);
         setLoading(false);
       });
   }, [productId]);
+
+  const handleAddToCart = () => {
+    addToCart({
+      id: product._id,
+      title: product.title,
+      price: product.price,
+      description: product.description,
+      image: product.imageSrc,
+      imageSrc: product.imageSrc,
+      colors: product.colors,
+      sizes: product.sizes,
+      selectedColor: selectedColor,
+      selectedSize: selectedSize,
+      quantity: 0
+    });
+  };
 
   if (loading) return <div className="text-white p-10">Loading product...</div>;
   if (!product) return <div className="text-red-500 p-10">Product not found.</div>;
@@ -76,29 +102,63 @@ export default function ProductPage() {
         {/* Right: Product Details */}
         <div className="md:w-1/2 space-y-6">
           <h1 className="text-3xl font-bold">{product.title}</h1>
-          <p className="text-2xl">{product.price}</p>
-          <p className="text-sm text-gray-300">{product.description}</p>
+          <p className="text-2xl font-semibold text-red-400">{product.price}</p>
+          <p className="text-sm text-gray-300 leading-relaxed">{product.description}</p>
 
           <div className="space-y-4">
-            <label className="block text-sm uppercase">Size</label>
-            <select className="w-full bg-black border border-white text-white px-4 py-2">
-              {product.sizes?.map((size: string, i: number) => (
-                <option key={i}>{size}</option>
-              ))}
-            </select>
+            {/* Size Selector */}
+            {product.sizes && product.sizes.length > 0 && (
+              <div>
+                <label className="block text-sm uppercase mb-2 font-semibold">Size</label>
+                <select 
+                  value={selectedSize}
+                  onChange={(e) => setSelectedSize(e.target.value)}
+                  className="w-full bg-zinc-800 border border-gray-600 text-white px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                >
+                  {product.sizes.map((size: string, i: number) => (
+                    <option key={i} value={size}>{size}</option>
+                  ))}
+                </select>
+              </div>
+            )}
 
-            <label className="block text-sm uppercase">Colour</label>
-            <select className="w-full bg-black border border-white text-white px-4 py-2">
-              {product.colors?.map((color: string, i: number) => (
-                <option key={i}>{color}</option>
-              ))}
-            </select>
+            {/* Color Selector */}
+            {product.colors && product.colors.length > 0 && (
+              <div>
+                <label className="block text-sm uppercase mb-2 font-semibold">Colour</label>
+                <select 
+                  value={selectedColor}
+                  onChange={(e) => setSelectedColor(e.target.value)}
+                  className="w-full bg-zinc-800 border border-gray-600 text-white px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                >
+                  {product.colors.map((color: string, i: number) => (
+                    <option key={i} value={color}>{color}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+
+          {/* Selected Options Display */}
+          <div className="bg-zinc-800 p-4 rounded-md">
+            <h3 className="text-sm font-semibold mb-2">Selected Options:</h3>
+            <div className="flex gap-4 text-sm">
+              {selectedSize && (
+                <span className=" bg-red-500 text-black px-2 py-1 rounded">
+                  Size: {selectedSize}
+                </span>
+              )}
+              {selectedColor && (
+                <span className=" bg-red-500 text-black px-2 py-1 rounded">
+                  Color: {selectedColor}
+                </span>
+              )}
+            </div>
           </div>
 
           <button
-            onClick={() => addToCart(product)}
-            className="mt-4 py-3 px-8 font-bold text-white"
-            style={{ backgroundColor: '#E0AD1A' }}
+            onClick={handleAddToCart}
+            className="w-full mt-6 py-4 px-8 font-bold text-black bg-red-500 hover:bg-red-700 transition-colors rounded-md"
           >
             ADD TO CART
           </button>
