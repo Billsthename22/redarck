@@ -1,100 +1,89 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/app/api/lib/mongodb';
 import Product from '@/app/api/model/Product';
-import { IncomingForm } from 'formidable';
-import fs from 'fs';
+import { writeFile } from 'fs/promises';
 import path from 'path';
-import { Readable } from 'stream';
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
-// Get raw body from NextRequest
-async function getRawBody(req: NextRequest): Promise<Buffer> {
-  const reader = req.body?.getReader();
-  const chunks: Uint8Array[] = [];
-
-  if (!reader) throw new Error('No body found');
-
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    chunks.push(value);
-  }
-
-  return Buffer.concat(chunks);
-}
-
-// Parse form using formidable
-function parseForm(buffer: Buffer, headers: Headers): Promise<{ fields: any; files: any }> {
-  const uploadDir = path.join(process.cwd(), '/public/uploads');
-  if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-
-  const form = new IncomingForm({
-    uploadDir,
-    keepExtensions: true,
-    multiples: true,
-  });
-
-  return new Promise((resolve, reject) => {
-    const stream = new Readable();
-    stream.push(buffer);
-    stream.push(null);
-
-    form.parse(
-      stream as any,
-      Object.fromEntries(headers.entries()),
-      (err, fields, files) => {
-        if (err) reject(err);
-        else resolve({ fields, files });
-      }
-    );
-  });
-}
+import { mkdir } from 'fs/promises';
 
 // POST: Upload and save product
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
-    const buffer = await getRawBody(req);
-    const { fields, files } = await parseForm(buffer, req.headers);
+    
+    // Parse form data using NextJS built-in FormData
+    const formData = await req.formData();
+    
+    // Extract fields
+    const title = formData.get('title') as string;
+    const price = formData.get('price') as string;
+    const description = formData.get('description') as string;
+    const colors = formData.get('colors') as string;
+    const sizes = formData.get('sizes') as string;
+    
+    // Extract files
+    const mainImage = formData.get('image') as File;
+    const colorImagesEntries = formData.getAll('colorImages') as File[];
 
-    console.log('FIELDS:', fields);
-    console.log('FILES:', files);
+    console.log('FIELDS:', { title, price, description, colors, sizes });
+    console.log('FILES:', { mainImage: mainImage?.name, colorImages: colorImagesEntries.length });
 
-    if (!fields.title || !fields.price || !files.image) {
+    // Validate required fields
+    if (!title || !price || !mainImage) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const mainImage = Array.isArray(files.image) ? files.image[0] : files.image;
-    const colorImages = Array.isArray(files.colorImages)
-      ? files.colorImages
-      : files.colorImages
-        ? [files.colorImages]
-        : [];
+    // Ensure upload directory exists
+    const uploadDir = path.join(process.cwd(), 'public/uploads');
+    try {
+      await mkdir(uploadDir, { recursive: true });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      // Directory might already exist, ignore error
+    }
 
-    const imageSrc = mainImage ? `/uploads/${path.basename(mainImage.filepath)}` : null;
-    const colorImagePaths = colorImages
-      .filter(Boolean)
-      .map((file: any) => `/uploads/${path.basename(file.filepath)}`);
+    // Save main image
+    let imageSrc = null;
+    if (mainImage && mainImage.size > 0) {
+      const mainImageBuffer = Buffer.from(await mainImage.arrayBuffer());
+      const mainImageName = `${Date.now()}-${mainImage.name}`;
+      const mainImagePath = path.join(uploadDir, mainImageName);
+      
+      await writeFile(mainImagePath, mainImageBuffer);
+      imageSrc = `/uploads/${mainImageName}`;
+    }
 
+    // Save color images
+    const colorImagePaths: string[] = [];
+    for (const file of colorImagesEntries) {
+      if (file && file.size > 0) {
+        const buffer = Buffer.from(await file.arrayBuffer());
+        const fileName = `${Date.now()}-${Math.random()}-${file.name}`;
+        const filePath = path.join(uploadDir, fileName);
+        
+        await writeFile(filePath, buffer);
+        colorImagePaths.push(`/uploads/${fileName}`);
+      }
+    }
+
+    // Create product
     const product = await Product.create({
-      title: fields.title,
-      price: fields.price,
-      description: fields.description,
-      colors: fields.colors?.split(',').map((c: string) => c.trim()) || [],
-      sizes: fields.sizes?.split(',').map((s: string) => s.trim()) || [],
+      title,
+      price: parseFloat(price),
+      description: description || '',
+      colors: colors ? colors.split(',').map(c => c.trim()).filter(Boolean) : [],
+      sizes: sizes ? sizes.split(',').map(s => s.trim()).filter(Boolean) : [],
       imageSrc,
       colorImages: colorImagePaths,
     });
 
     return NextResponse.json(product, { status: 201 });
+    
   } catch (err) {
     console.error('❌ Upload failed:', err);
-    return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
+    return NextResponse.json({ 
+      error: 'Upload failed', 
+      details: err instanceof Error ? err.message : 'Unknown error' 
+    }, { status: 500 });
   }
 }
 
