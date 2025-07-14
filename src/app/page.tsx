@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Navbar from "./components/Navbar"
 import BannerVerse from "./components/BannerVerse"
-
+import Outpost from "./components/Outpost";
 export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white font-sans overflow-x-hidden">
@@ -96,14 +96,7 @@ export default function Home() {
 </section>
 
       {/* Outpost Gallery */}
-      <section>
-        <h2 className="text-center text-xl font-bold py-4">OUTPOST</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-6 pb-10">
-          <div className="bg-gray-200 h-48" />
-          <div className="bg-gray-200 h-48" />
-          <div className="bg-gray-200 h-48" />
-        </div>
-      </section>
+    <Outpost/>
 
       {/* Second BannerVerse */}
       <BannerVerse />
