@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ShoppingCart, User, Mail, Menu, X } from 'lucide-react'
+import { ShoppingCart, User, Menu, X } from 'lucide-react'
 import { useCart } from '@/app/Context/cartcontext'
 
 export default function Navbar() {
@@ -23,8 +23,12 @@ export default function Navbar() {
         {/* Left Links */}
         <div className="hidden md:flex items-center space-x-6">
           <Link href="/" className="font-semibold uppercase tracking-wide hover:text-red-500 transition">Home</Link>
-          <Link href="/shop" className="hover:text-red-500 transition">Shop</Link>
-          <Link href="/about" className="hover:text-red-500 transition">About</Link>
+          <Link href="/shop" className="font-semibold uppercase tracking-wide hover:text-red-500 transition">Shop</Link>
+          <Link href="/#about" className="font-semibold uppercase tracking-wide hover:text-red-500 transition">About</Link>
+
+
+          <Link href="/Art" className="font-semibold uppercase tracking-wide hover:text-red-500 transition">Art</Link>
+          <Link href="/contact" className="font-semibold uppercase tracking-wide hover:text-red-500 transition">Contact</Link>
         </div>
 
         {/* Logo */}
@@ -32,7 +36,7 @@ export default function Navbar() {
           <Link href="/">
             <Image
               src="/redack nation 1.png"
-              alt="Shine Watch Logo"
+              alt="Redack Nation Logo"
               width={50}
               height={50}
               className="object-contain"
@@ -48,8 +52,6 @@ export default function Navbar() {
               <User className="w-6 h-6" />
             </Link>
           )}
-
-          {/* Cart Icon */}
           <button onClick={toggleCart} className="relative hover:text-red-500 transition">
             <ShoppingCart className="w-6 h-6" />
             {totalQuantity > 0 && (
@@ -58,10 +60,6 @@ export default function Navbar() {
               </span>
             )}
           </button>
-
-          <Link href="/contact" className="hover:text-red-500 transition">
-            <Mail className="w-5 h-5" />
-          </Link>
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -76,23 +74,24 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden mt-4 space-y-4">
-          <Link href="/" className="block hover:text-red-500 transition">Home</Link>
-          <Link href="/shop" className="block hover:text-red-500 transition">Shop</Link>
-          <Link href="/about" className="block hover:text-red-500 transition">About</Link>
+        <div className="md:hidden mt-4 flex flex-col items-center space-y-4 text-center">
+          <Link href="/" className="hover:text-red-500 transition">Home</Link>
+          <Link href="/shop" className="hover:text-red-500 transition">Shop</Link>
+          <Link href="/about" className="hover:text-red-500 transition">About</Link>
+          <Link href="/art" className="hover:text-red-500 transition">Art</Link>
+          <Link href="/contact" className="hover:text-red-500 transition">Contact</Link>
 
           {isAdmin && (
-            <Link href="/signup" className="block hover:text-red-500 transition flex items-center gap-2">
+            <Link href="/signup" className="hover:text-red-500 transition flex items-center gap-2">
               <User className="w-5 h-5" /> Account
             </Link>
           )}
-
           <button
             onClick={() => {
               toggleCart()
               setIsOpen(false)
             }}
-            className="block hover:text-red-500 transition flex items-center gap-2"
+            className="hover:text-red-500 transition flex items-center gap-2"
           >
             <ShoppingCart className="w-5 h-5" />
             <span>Cart</span>
@@ -102,10 +101,6 @@ export default function Navbar() {
               </span>
             )}
           </button>
-
-          <Link href="/contact" className="block hover:text-red-500 transition flex items-center gap-2">
-            <Mail className="w-5 h-5" /> Contact
-          </Link>
         </div>
       )}
     </nav>
