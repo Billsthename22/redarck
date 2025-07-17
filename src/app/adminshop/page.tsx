@@ -1,6 +1,6 @@
 'use client';
 
-import Navbar from '../components/Navbar';
+import Adminnavbar from '@/app/components/Adminnavbar'
 import { useState, useEffect } from 'react';
 import { Search, Plus, UploadCloud } from 'lucide-react';
 import ProductCard from '../components/Productcard';
@@ -100,7 +100,7 @@ export default function AdminShopPage() {
 
   return (
     <main className="bg-black text-white min-h-screen flex flex-col justify-between">
-      <Navbar />
+      <Adminnavbar />
 
       {/* Search + Add Button */}
       <div className="flex justify-center mt-8 mb-4 relative">
