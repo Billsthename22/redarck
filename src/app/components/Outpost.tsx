@@ -1,28 +1,46 @@
+// components/OutpostCarousel.tsx
 'use client';
 
-import React from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
-export default function Outpost() {
+const images = [
+  '/shoot1.png',
+  '/shoot2.png',
+  '/shoot3.png',
+];
+
+const OutpostCarousel = () => {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % images.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <section className="px-6 pb-10 flex justify-center">
       <div className="w-full max-w-[1320px]">
-      <h2 className="text-center font-[koulen] text-[79px] font-bold py-4">
-  OUTPOST
-</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {['outpost1.png', 'outpost2.jpg', 'outpost3.jpg'].map((img, index) => (
+        <h2 className="text-center font-[koulen] text-[79px] font-bold py-4">
+          OUTPOST
+        </h2>
+
+        <div className="relative w-full h-[600px] rounded-[37px] overflow-hidden group">
+          {images.map((src, index) => (
             <div
               key={index}
-              className={`relative ${
-                index === 0 ? 'w-[416px]' : 'w-[416px]'
-              } h-[639px] rounded-[37px] overflow-hidden opacity-100 bg-gray-200 mx-auto`}
+              className={`absolute top-0 left-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
+                index === current ? 'opacity-100 z-10' : 'opacity-0 z-0'
+              }`}
             >
               <Image
-                src={`/${img}`}
+                src={src}
                 alt={`Outpost Image ${index + 1}`}
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-95"
+                priority={index === 0}
               />
             </div>
           ))}
@@ -30,4 +48,6 @@ export default function Outpost() {
       </div>
     </section>
   );
-}
+};
+
+export default OutpostCarousel;

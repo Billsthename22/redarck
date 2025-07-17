@@ -13,20 +13,21 @@ type ProductCardProps = {
 export default function ProductCard({ id, imageSrc, title, price }: ProductCardProps) {
   return (
     <div
-      className="text-white"
-      style={{
-        width: '362px',
-        height: '509px',
-        opacity: 1,
-        transform: 'rotate(0deg)',
-      }}
+      className="
+        text-white 
+        w-[180px] h-[280px] 
+        sm:w-[220px] sm:h-[330px]
+        md:w-[280px] md:h-[400px] 
+        lg:w-[340px] lg:h-[480px] 
+        xl:w-[362px] xl:h-[509px]
+        opacity-100 transform rotate-0 transition-transform hover:scale-105"
     >
       <Link href={`/product/${id}`}>
-        <div className="w-full h-[400px] bg-zinc-300 mb-2 rounded-md overflow-hidden cursor-pointer transition-transform hover:scale-105">
+        <div className="w-full h-[70%] bg-zinc-300 mb-2 rounded-md overflow-hidden cursor-pointer">
           <Image
             src={imageSrc}
             alt={title}
-            width={362}
+            width={400}
             height={400}
             className="w-full h-full object-cover"
             priority

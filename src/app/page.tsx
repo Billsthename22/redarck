@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Navbar from './components/Navbar';
 import BannerVerse from './components/BannerVerse';
 import Outpost from './components/Outpost';
+import Footer from './components/Footer';
 
 export default function Home() {
   return (
@@ -95,7 +96,8 @@ export default function Home() {
       <BannerVerse />
 
       {/* Our Why Section */}
-      <section id='about'className="bg-[#9C1A1A] text-white flex flex-col md:flex-row items-center justify-center max-w-[1300px] h-[639px] mx-auto rounded-[30px] overflow-hidden px-8 py-8 gap-6">
+      <section id='about' className="mt-8 bg-[#9C1A1A] text-white flex flex-col md:flex-row items-center justify-center max-w-[1300px] h-[639px] mx-auto rounded-[30px] overflow-hidden px-8 py-8 gap-6">
+
 
 {/* Left Side */}
 <div className="flex-1 flex flex-col justify-center h-full relative text-left">
@@ -108,7 +110,7 @@ export default function Home() {
 
   {/* First Paragraph */}
   <p className="mt-16 text-[16px] md:text-[18px] font-bold leading-[160%] uppercase">
-    REDACT NATION IS A CHRISTIAN FASHION BRAND FOUNDED BY OVIE AKPOBORIE, A DEDICATED
+    REDACK NATION IS A CHRISTIAN FASHION BRAND FOUNDED BY OVIE AKPOBORIE, A DEDICATED
     CHRISTIAN AND CREATIVE DIRECTOR WITH A PASSION FOR BOTH FAITH AND FASHION. WE
     BELIEVE THAT WHAT YOU WEAR CAN BE A POWERFUL FORM OF SELF-EXPRESSION, ESPECIALLY
     WHEN IT COMES TO SHOWCASING YOUR CHRISTIAN MORALS AND BELIEFS. OUR BRAND STANDS
@@ -132,7 +134,7 @@ export default function Home() {
   className="flex justify-center items-center"
   style={{
     width: '491.2px',
-    height: '614px',
+    height: '580px',
     borderRadius: '27px',
     backgroundColor: '#9C1A1A',
     overflow: 'hidden',
@@ -175,7 +177,7 @@ export default function Home() {
 
 
 </section>
-
+<Footer/>
     </main>
   );
 }
