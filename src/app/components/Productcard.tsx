@@ -9,7 +9,7 @@ type ProductCardProps = {
   title: string;
   price: string;
   route?: string;
-  type?: 'product' | 'art'; // ✅ Add this
+  type?: 'product' | 'art';
 };
 
 export default function ProductCard({ id, imageSrc, title, price, route = 'product', type }: ProductCardProps) {
@@ -26,6 +26,10 @@ export default function ProductCard({ id, imageSrc, title, price, route = 'produ
   const getHref = () => {
     if (route === 'admindetail' && type) {
       return `/${route}/${id}?type=${type}`;
+    }
+    // Handle public art and product pages
+    if (route === 'Art' || route === 'product') {
+      return `/${route}/${id}`;
     }
     return `/${route}/${id}`;
   };

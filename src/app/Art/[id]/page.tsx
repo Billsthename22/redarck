@@ -6,41 +6,28 @@ import Navbar from '@/app/components/Navbar';
 import { useCart } from '@/app/Context/cartcontext';
 import Image from 'next/image';
 
-type Product = {
-  _id: string;
-  title: string;
-  price: number | string;
-  description: string;
-  imageSrc: string;
-  colorImages?: string[];
-  colors?: string[];
-};
-
-export default function ProductPage() {
+export default function ArtPage() {
   const { addToCart } = useCart();
   const params = useParams();
-  const productId = params?.id;
+  const artId = params?.id;
 
-  const [product, setProduct] = useState<Product | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [artwork, setArtwork] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
 
   useEffect(() => {
-    if (!productId) return;
+    if (!artId) return;
 
-    fetch(`/api/arts/${productId}`)
+    fetch(`/api/arts/${artId}`)
       .then((res) => {
-        if (!res.ok) throw new Error('Failed to fetch product');
+        if (!res.ok) throw new Error('Failed to fetch artwork');
         return res.json();
       })
       .then((data) => {
-        setProduct(data);
+        setArtwork(data);
         setLoading(false);
-        // Set default selections if available
-        if (data.sizes && data.sizes.length > 0) {
-          setSelectedSize(data.sizes[0]);
-        }
+        // Set default color selection
         if (data.colors && data.colors.length > 0) {
           setSelectedColor(data.colors[0]);
         }
@@ -49,25 +36,25 @@ export default function ProductPage() {
         console.error(err);
         setLoading(false);
       });
-  }, [productId]);
+  }, [artId]);
 
   const handleAddToCart = () => {
-    if (!product) return;
     addToCart({
-        id: product._id,
-        title: product.title,
-        price: String(product.price),
-        description: product.description,
-        image: product.imageSrc,
-        imageSrc: product.imageSrc,
-        colors: product.colors,
-        selectedColor: selectedColor,
-        quantity: 0
+      id: artwork._id,
+      title: artwork.title,
+      price: artwork.price,
+      description: artwork.description,
+      image: artwork.imageSrc,
+      imageSrc: artwork.imageSrc,
+      colors: artwork.colors,
+      selectedColor: selectedColor,
+      quantity: 1,
+ 
     });
   };
 
-  if (loading) return <div className="text-white p-10">Loading product...</div>;
-  if (!product) return <div className="text-red-500 p-10">Product not found.</div>;
+  if (loading) return <div className="text-white p-10">Loading artwork...</div>;
+  if (!artwork) return <div className="text-red-500 p-10">Artwork not found.</div>;
 
   const isValidImage = (src: string) =>
     src && typeof src === 'string' && !src.startsWith('blob:') && src.trim() !== '';
@@ -81,8 +68,8 @@ export default function ProductPage() {
         <div className="md:w-1/2 space-y-4">
           <div className="w-full h-[500px] bg-zinc-700 rounded-md overflow-hidden">
             <Image
-              src={isValidImage(product?.imageSrc) ? product.imageSrc : '/placeholder.png'}
-              alt={product?.title || 'Product Image'}
+              src={isValidImage(artwork?.imageSrc) ? artwork.imageSrc : '/placeholder.png'}
+              alt={artwork?.title || 'Artwork Image'}
               width={500}
               height={500}
               className="w-full h-full object-cover"
@@ -95,9 +82,9 @@ export default function ProductPage() {
           </div>
 
           {/* Color Images */}
-          {product.colorImages && product.colorImages.length > 0 && (
+          {artwork.colorImages && artwork.colorImages.length > 0 && (
             <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
-              {product.colorImages.map((src: string, i: number) => (
+              {artwork.colorImages.map((src: string, i: number) => (
                 <div
                   key={i}
                   className="w-[60px] h-[60px] overflow-hidden rounded-md bg-zinc-500 flex-shrink-0"
@@ -119,55 +106,74 @@ export default function ProductPage() {
           )}
         </div>
 
-        {/* Right: Product Details */}
+        {/* Right: Artwork Details */}
         <div className="md:w-1/2 space-y-6">
-          <h1 className="text-3xl font-bold">{product.title}</h1>
-          <p className="text-2xl font-semibold text-red-400">{product.price}</p>
-          <p className="text-sm text-gray-300 leading-relaxed">{product.description}</p>
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold">{artwork.title}</h1>
+            <span className="bg-red-600 text-white text-xs px-2 py-1 rounded">
+              ARTWORK
+            </span>
+          </div>
+          <p className="text-2xl font-semibold text-red-400">{artwork.price}</p>
+          <p className="text-sm text-gray-300 leading-relaxed">{artwork.description}</p>
 
-          
-            {/* Color Selector */}
-            {product.colors && product.colors.length > 0 && (
+          <div className="space-y-4">
+            {/* Color Selector - Only for artworks */}
+            {artwork.colors && artwork.colors.length > 0 && (
               <div>
-                <label className="block text-sm uppercase mb-2 font-semibold">Colour</label>
+                <label className="block text-sm uppercase mb-2 font-semibold">Available Colors</label>
                 <select 
                   value={selectedColor}
                   onChange={(e) => setSelectedColor(e.target.value)}
-                  className="w-full bg-zinc-800 border border-gray-600 text-white px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400"
+                  className="w-full bg-zinc-800 border border-gray-600 text-white px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
-                  {product.colors.map((color: string, i: number) => (
+                  {artwork.colors.map((color: string, i: number) => (
                     <option key={i} value={color}>{color}</option>
                   ))}
                 </select>
               </div>
             )}
-            {/* Selected Options Display */}
-            {(selectedSize || selectedColor) && (
-              <div className="bg-zinc-800 p-4 rounded-md">
-                <h3 className="text-sm font-semibold mb-2">Selected Options:</h3>
-                <div className="flex gap-4 text-sm">
-                  {selectedSize && (
-                    <span className="bg-red-500 text-white px-2 py-1 rounded">
-                      Size: {selectedSize}
-                    </span>
-                  )}
-                  {selectedColor && (
-                    <span className="bg-red-500 text-white px-2 py-1 rounded">
-                      Color: {selectedColor}
-                    </span>
-                  )}
-                </div>
-              </div>
-            )}
+          </div>
 
-            <button
-              onClick={handleAddToCart}
-              className="w-full mt-6 py-4 px-8 font-bold text-white bg-red-500 hover:bg-red-600 transition-colors rounded-md"
-            >
-              ADD TO CART
-            </button>
+          {/* Selected Options Display */}
+          {selectedColor && (
+            <div className="bg-zinc-800 p-4 rounded-md">
+              <h3 className="text-sm font-semibold mb-2">Selected Options:</h3>
+              <div className="flex gap-4 text-sm">
+                <span className="bg-red-500 text-black px-2 py-1 rounded">
+                  Color: {selectedColor}
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Artwork Info */}
+          <div className="bg-zinc-800 p-4 rounded-md">
+            <h3 className="text-sm font-semibold mb-2 uppercase">Artwork Details</h3>
+            <div className="space-y-1 text-sm text-gray-300">
+              <p><span className="text-white">Type:</span> Original Artwork</p>
+              <p><span className="text-white">Unique:</span> One of a kind piece</p>
+              {artwork.colors && artwork.colors.length > 0 && (
+                <p><span className="text-white">Available in:</span> {artwork.colors.join(', ')}</p>
+              )}
+            </div>
+          </div>
+
+          <button
+            onClick={handleAddToCart}
+            className="w-full mt-6 py-4 px-8 font-bold text-black bg-red-500 hover:bg-red-700 transition-colors rounded-md"
+          >
+            ADD TO CART
+          </button>
+
+          {/* Note for artwork purchases */}
+          <div className="bg-yellow-900/20 border border-yellow-600 p-4 rounded-md">
+            <p className="text-yellow-400 text-xs">
+              ⚠️ <strong>Note:</strong> This is an original artwork. Each piece is unique and may have slight variations.
+            </p>
           </div>
         </div>
+      </div>
     </main>
   );
 }
