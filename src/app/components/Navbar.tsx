@@ -78,7 +78,7 @@ export default function Navbar() {
           <Link href="/" className="hover:text-red-500 transition">Home</Link>
           <Link href="/shop" className="hover:text-red-500 transition">Shop</Link>
           <Link href="/about" className="hover:text-red-500 transition">About</Link>
-          <Link href="/art" className="hover:text-red-500 transition">Art</Link>
+          <Link href="/Art" className="hover:text-red-500 transition">Art</Link>
           <Link href="/contact" className="hover:text-red-500 transition">Contact</Link>
 
           {isAdmin && (

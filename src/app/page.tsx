@@ -6,10 +6,11 @@ import Navbar from './components/Navbar';
 import BannerVerse from './components/BannerVerse';
 import Outpost from './components/Outpost';
 import Footer from './components/Footer';
-
+import Buffer from './components/buffer'
 export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white font-sans overflow-x-hidden">
+      <uffer/>
       <Navbar />
 
       {/* Hero Section */}
@@ -51,42 +52,109 @@ export default function Home() {
 
       {/* Feature Boxes */}
       <section className="px-6 py-8 flex justify-center">
-  <div className="flex flex-col sm:flex-row gap-4">
+  {/* Desktop View */}
+  <div className="hidden lg:flex flex-row gap-4 max-w-[1320px] w-full">
     {/* Left Big Box */}
     <Link href="/shop" className="relative w-[640px] h-[639px] rounded-[37px] overflow-hidden block group">
       <img 
         src="/newrelease.png" 
         alt="New Release" 
-        className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
+        className="w-full h-full object-cover group-hover:scale-110 transition"
       />
-      <div className="absolute inset-0 bg-black/40 flex justify-start items-end p-6 group-hover:bg-black/60 transition duration-300">
+      <div className="absolute inset-0 bg-black/40 flex justify-start items-end p-6 group-hover:bg-black/60 transition">
         <h3 className="font-[koulen] text-[100px] leading-[100%] text-white uppercase">NEW<br />RELEASES</h3>
       </div>
     </Link>
 
     {/* Right Column */}
     <div className="flex flex-col justify-between gap-4">
-      {/* Top Small Box */}
       <Link href="/customorder" className="relative w-[640px] h-[310px] rounded-[37px] overflow-hidden block group">
         <img 
           src="/customorder .png" 
           alt="Custom Order" 
-          className="w-full h-full object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
+          className="w-full h-full object-cover group-hover:scale-110 transition"
         />
-        <div className="absolute inset-0 bg-black/40 flex justify-start items-start p-6 group-hover:bg-black/60 transition duration-300">
-          <h3 className="font-[koulen] text-[96px] leading-[90%] text-white uppercase">CUSTOM<br />ORDER</h3>
+        <div className="absolute inset-0 bg-black/40 flex justify-start items-start p-6 group-hover:bg-black/60 transition">
+          <h3 className="font-[koulen] text-[96px] text-white uppercase leading-tight">CUSTOM<br />ORDER</h3>
         </div>
       </Link>
 
-      {/* Bottom Small Box */}
       <div className="relative w-[640px] h-[310px] rounded-[37px] overflow-hidden group">
         <video
           src="/comingsoon.MP4"
           className="w-full h-full object-cover"
           autoPlay muted loop playsInline
         />
-        <div className="absolute inset-0 bg-black/30 flex justify-center items-center group-hover:bg-black/50 transition duration-300"></div>
+        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition"></div>
       </div>
+    </div>
+  </div>
+
+  {/* Tablet View */}
+  <div className="hidden sm:flex lg:hidden flex-col gap-4 w-full max-w-[768px]">
+    <Link href="/shop" className="relative w-full h-[400px] rounded-[30px] overflow-hidden block group">
+      <img 
+        src="/newrelease.png" 
+        alt="New Release"
+        className="w-full h-full object-cover group-hover:scale-105 transition"
+      />
+      <div className="absolute inset-0 bg-black/40 flex justify-start items-end p-4 group-hover:bg-black/60 transition">
+        <h3 className="font-[koulen] text-[64px] text-white uppercase">NEW<br />RELEASES</h3>
+      </div>
+    </Link>
+
+    <Link href="/customorder" className="relative w-full h-[300px] rounded-[30px] overflow-hidden block group">
+      <img 
+        src="/customorder .png" 
+        alt="Custom Order"
+        className="w-full h-full object-cover group-hover:scale-105 transition"
+      />
+      <div className="absolute inset-0 bg-black/40 flex justify-start items-start p-4 group-hover:bg-black/60 transition">
+        <h3 className="font-[koulen] text-[52px] text-white uppercase">CUSTOM ORDER</h3>
+      </div>
+    </Link>
+
+    <div className="relative w-full h-[300px] rounded-[30px] overflow-hidden group">
+      <video
+        src="/comingsoon.MP4"
+        className="w-full h-full object-cover"
+        autoPlay muted loop playsInline
+      />
+      <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition"></div>
+    </div>
+  </div>
+
+  {/* Mobile View */}
+  <div className="flex flex-col gap-4 sm:hidden w-full">
+    <Link href="/shop" className="relative w-full h-[300px] rounded-[20px] overflow-hidden block group">
+      <img
+        src="/newrelease.png"
+        alt="New Release"
+        className="w-full h-full object-cover group-hover:scale-105 transition"
+      />
+      <div className="absolute inset-0 bg-black/40 flex justify-start items-end p-4 group-hover:bg-black/60 transition">
+        <h3 className="font-[koulen] text-[40px] text-white uppercase leading-tight">NEW<br/>RELEASES</h3>
+      </div>
+    </Link>
+
+    <Link href="/customorder" className="relative w-full h-[250px] rounded-[20px] overflow-hidden block group">
+      <img
+        src="/customorder .png"
+        alt="Custom Order"
+        className="w-full h-full object-cover group-hover:scale-105 transition"
+      />
+      <div className="absolute inset-0 bg-black/40 flex justify-start items-start p-4 group-hover:bg-black/60 transition">
+        <h3 className="font-[koulen] text-[36px] text-white uppercase leading-tight">CUSTOM ORDER</h3>
+      </div>
+    </Link>
+
+    <div className="relative w-full h-[250px] rounded-[20px] overflow-hidden group">
+      <video
+        src="/comingsoon.MP4"
+        className="w-full h-full object-cover"
+        autoPlay muted loop playsInline
+      />
+      <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition"></div>
     </div>
   </div>
 </section>
@@ -157,26 +225,30 @@ export default function Home() {
 
 
       {/* Let's Chat Section */}
-      <section className="text-center py-10 px-6">
-  <h2 className="font-[koulen] font-normal text-[96px] leading-[100%] mb-4">
+      <section className="text-center py-8 px-4 sm:px-6">
+  <h2 className="font-[koulen] font-normal text-[32px] sm:text-[48px] leading-[100%] mb-4">
     LET&apos;S CHAT
   </h2>
-  
-  <p className="max-w-xl mx-auto font-[koulen] font-normal text-[20px] leading-[100%] tracking-[0%] text-center text-gray-400 mb-6">
-  Have a question about our designs, an inquiry about an order, or just want to share your passion for Christian fashion? We'd love to hear from you! <br /><br />
-  To stay updated on our latest collections and join our community! <br /><br />
-  We're committed to creating a God-loving community and are always here to help. We'll get back to you as soon as possible!
-</p>
 
-  
-<div className="flex justify-center space-x-4">
-  <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded transition font-[koulen] text-[24px]">Instagram</button>
-  <button className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded transition font-[koulen] text-[24px]">WhatsApp</button>
-  <button className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition font-[koulen] text-[24px]">Gmail</button>
-</div>
+  <p className="max-w-xl mx-auto font-[koulen] font-normal text-[14px] sm:text-[16px] leading-[130%] tracking-[0%] text-gray-400 mb-6">
+    Have a question about our designs, an inquiry about an order, or just want to share your passion for Christian fashion? We'd love to hear from you! <br /><br />
+    To stay updated on our latest collections and join our community! <br /><br />
+    We're committed to creating a God-loving community and are always here to help. We'll get back to you as soon as possible!
+  </p>
 
-
+  <div className="flex justify-center space-x-2 sm:space-x-4 flex-wrap">
+    <button className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded transition font-[koulen] text-[12px] sm:text-[16px]">
+      Instagram
+    </button>
+    <button className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded transition font-[koulen] text-[12px] sm:text-[16px]">
+      WhatsApp
+    </button>
+    <button className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded transition font-[koulen] text-[12px] sm:text-[16px]">
+      Gmail
+    </button>
+  </div>
 </section>
+
 <Footer/>
     </main>
   );
