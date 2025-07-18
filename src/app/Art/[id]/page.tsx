@@ -6,13 +6,22 @@ import Navbar from '@/app/components/Navbar';
 import { useCart } from '@/app/Context/cartcontext';
 import Image from 'next/image';
 
+type Product = {
+  _id: string;
+  title: string;
+  price: number | string;
+  description: string;
+  imageSrc: string;
+  colorImages?: string[];
+  colors?: string[];
+};
+
 export default function ProductPage() {
   const { addToCart } = useCart();
   const params = useParams();
   const productId = params?.id;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [product, setProduct] = useState<any>(null);
+  const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
@@ -20,7 +29,7 @@ export default function ProductPage() {
   useEffect(() => {
     if (!productId) return;
 
-    fetch(`/api/products/${productId}`)
+    fetch(`/api/arts/${productId}`)
       .then((res) => {
         if (!res.ok) throw new Error('Failed to fetch product');
         return res.json();
@@ -28,7 +37,7 @@ export default function ProductPage() {
       .then((data) => {
         setProduct(data);
         setLoading(false);
-        // Set default selections
+        // Set default selections if available
         if (data.sizes && data.sizes.length > 0) {
           setSelectedSize(data.sizes[0]);
         }
@@ -43,16 +52,17 @@ export default function ProductPage() {
   }, [productId]);
 
   const handleAddToCart = () => {
+    if (!product) return;
     addToCart({
-      id: product._id,
-      title: product.title,
-      price: product.price,
-      description: product.description,
-      image: product.imageSrc,
-      imageSrc: product.imageSrc,
-      colors: product.colors,
-      selectedColor: selectedColor,
-      quantity: 0
+        id: product._id,
+        title: product.title,
+        price: String(product.price),
+        description: product.description,
+        image: product.imageSrc,
+        imageSrc: product.imageSrc,
+        colors: product.colors,
+        selectedColor: selectedColor,
+        quantity: 0
     });
   };
 
@@ -76,25 +86,37 @@ export default function ProductPage() {
               width={500}
               height={500}
               className="w-full h-full object-cover"
+              priority
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = '/placeholder.png';
+              }}
             />
           </div>
 
-          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
-            {product.colorImages?.map((src: string, i: number) => (
-              <div
-                key={i}
-                className="w-[60px] h-[60px] overflow-hidden rounded-md bg-zinc-500"
-              >
-                <Image
-                  src={isValidImage(src) ? src : '/placeholder.png'}
-                  alt={`Color ${i}`}
-                  width={60}
-                  height={60}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
-          </div>
+          {/* Color Images */}
+          {product.colorImages && product.colorImages.length > 0 && (
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+              {product.colorImages.map((src: string, i: number) => (
+                <div
+                  key={i}
+                  className="w-[60px] h-[60px] overflow-hidden rounded-md bg-zinc-500 flex-shrink-0"
+                >
+                  <Image
+                    src={isValidImage(src) ? src : '/placeholder.png'}
+                    alt={`Color ${i}`}
+                    width={60}
+                    height={60}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/placeholder.png';
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Right: Product Details */}
@@ -103,23 +125,7 @@ export default function ProductPage() {
           <p className="text-2xl font-semibold text-red-400">{product.price}</p>
           <p className="text-sm text-gray-300 leading-relaxed">{product.description}</p>
 
-          <div className="space-y-4">
-            {/* Size Selector */}
-            {product.sizes && product.sizes.length > 0 && (
-              <div>
-                <label className="block text-sm uppercase mb-2 font-semibold">Size</label>
-                <select 
-                  value={selectedSize}
-                  onChange={(e) => setSelectedSize(e.target.value)}
-                  className="w-full bg-zinc-800 border border-gray-600 text-white px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                >
-                  {product.sizes.map((size: string, i: number) => (
-                    <option key={i} value={size}>{size}</option>
-                  ))}
-                </select>
-              </div>
-            )}
-
+          
             {/* Color Selector */}
             {product.colors && product.colors.length > 0 && (
               <div>
@@ -127,7 +133,7 @@ export default function ProductPage() {
                 <select 
                   value={selectedColor}
                   onChange={(e) => setSelectedColor(e.target.value)}
-                  className="w-full bg-zinc-800 border border-gray-600 text-white px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                  className="w-full bg-zinc-800 border border-gray-600 text-white px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400"
                 >
                   {product.colors.map((color: string, i: number) => (
                     <option key={i} value={color}>{color}</option>
@@ -135,33 +141,33 @@ export default function ProductPage() {
                 </select>
               </div>
             )}
-          </div>
+            {/* Selected Options Display */}
+            {(selectedSize || selectedColor) && (
+              <div className="bg-zinc-800 p-4 rounded-md">
+                <h3 className="text-sm font-semibold mb-2">Selected Options:</h3>
+                <div className="flex gap-4 text-sm">
+                  {selectedSize && (
+                    <span className="bg-red-500 text-white px-2 py-1 rounded">
+                      Size: {selectedSize}
+                    </span>
+                  )}
+                  {selectedColor && (
+                    <span className="bg-red-500 text-white px-2 py-1 rounded">
+                      Color: {selectedColor}
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
 
-          {/* Selected Options Display */}
-          <div className="bg-zinc-800 p-4 rounded-md">
-            <h3 className="text-sm font-semibold mb-2">Selected Options:</h3>
-            <div className="flex gap-4 text-sm">
-              {selectedSize && (
-                <span className=" bg-red-500 text-black px-2 py-1 rounded">
-                  Size: {selectedSize}
-                </span>
-              )}
-              {selectedColor && (
-                <span className=" bg-red-500 text-black px-2 py-1 rounded">
-                  Color: {selectedColor}
-                </span>
-              )}
-            </div>
+            <button
+              onClick={handleAddToCart}
+              className="w-full mt-6 py-4 px-8 font-bold text-white bg-red-500 hover:bg-red-600 transition-colors rounded-md"
+            >
+              ADD TO CART
+            </button>
           </div>
-
-          <button
-            onClick={handleAddToCart}
-            className="w-full mt-6 py-4 px-8 font-bold text-black bg-red-500 hover:bg-red-700 transition-colors rounded-md"
-          >
-            ADD TO CART
-          </button>
         </div>
-      </div>
     </main>
   );
 }

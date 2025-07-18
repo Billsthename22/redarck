@@ -11,6 +11,7 @@ export default function AdminShopPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [colorPreviews, setColorPreviews] = useState<string[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [allProducts, setAllProducts] = useState<any[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [colorImageFiles, setColorImageFiles] = useState<File[]>([]);
@@ -120,7 +121,7 @@ export default function AdminShopPage() {
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="ml-4 w-10 h-10 rounded-full bg-yellow-500 flex items-center justify-center text-black"
+          className="ml-4 w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white"
         >
           <Plus />
         </button>
@@ -137,6 +138,8 @@ export default function AdminShopPage() {
                 imageSrc={product.imageSrc}
                 title={product.title}
                 price={product.price}
+                route="admindetail"
+                type='product'
               />
             ))
           ) : (
