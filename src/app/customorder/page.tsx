@@ -9,13 +9,14 @@ export default function CustomOrderPage() {
     quantity: '',
     wearType: '',
     colours: '',
+    quality: '',
     dueDate: '',
     email: '',
     phone: '',
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -29,6 +30,7 @@ export default function CustomOrderPage() {
       quantity,
       wearType,
       colours,
+      quality,
       dueDate,
       email,
       phone,
@@ -40,11 +42,12 @@ export default function CustomOrderPage() {
 🔹 Quantity: ${quantity}
 🔹 Type of Wear: ${wearType}
 🔹 Colours: ${colours || 'N/A'}
+🔹 Quality: ${quality}
 🔹 Due Date: ${dueDate}
 🔹 Email: ${email}
 🔹 Phone Number: ${phone}`;
 
-    const phoneNumber = '2349155581053'; // ← Replace with your WhatsApp number (without +)
+    const phoneNumber = '2347072109057';
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURI(message)}`;
 
     window.open(whatsappUrl, '_blank');
@@ -61,6 +64,7 @@ export default function CustomOrderPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          {/* existing fields */}
           <div>
             <label className="block text-gray-300 mb-1">Full Name</label>
             <input
@@ -69,7 +73,7 @@ export default function CustomOrderPage() {
               value={form.fullName}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
               placeholder="Your full name"
             />
           </div>
@@ -81,7 +85,7 @@ export default function CustomOrderPage() {
               name="companyName"
               value={form.companyName}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
               placeholder="Optional"
             />
           </div>
@@ -94,7 +98,7 @@ export default function CustomOrderPage() {
               value={form.quantity}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
               placeholder="Quantity"
             />
           </div>
@@ -107,7 +111,7 @@ export default function CustomOrderPage() {
               value={form.wearType}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
               placeholder="e.g. T-shirts, Hoodies"
             />
           </div>
@@ -119,10 +123,27 @@ export default function CustomOrderPage() {
               name="colours"
               value={form.colours}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
               placeholder="e.g. Black, Red"
             />
           </div>
+
+          {/* ✅ Quality Field */}
+          <div>
+  <label className="block text-gray-300 mb-1">Quality</label>
+  <select
+    name="quality"
+    value={form.quality}
+    onChange={handleChange}
+    required
+    className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500 appearance-none"
+  >
+    <option value="">Select Quality</option>
+    <option value="Standard">Standard</option>
+    <option value="Premium">Premium</option>
+  </select>
+</div>
+
 
           <div>
             <label className="block text-gray-300 mb-1">Due Date</label>
@@ -132,7 +153,7 @@ export default function CustomOrderPage() {
               value={form.dueDate}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
 
@@ -144,7 +165,7 @@ export default function CustomOrderPage() {
               value={form.email}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
               placeholder="you@example.com"
             />
           </div>
@@ -157,14 +178,14 @@ export default function CustomOrderPage() {
               value={form.phone}
               onChange={handleChange}
               required
-              className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
               placeholder="+234..."
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-yellow-500 hover:bg-yellow-400 text-black py-3 rounded-xl font-bold transition"
+            className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-bold transition"
           >
             Submit Order
           </button>

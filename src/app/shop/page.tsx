@@ -11,19 +11,26 @@ export default function ShopPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
 
-  // Fetch products from your MongoDB via API route
   useEffect(() => {
-    fetch('/api/products')
-      .then(res => res.json())
-      .then(data => setAllProducts(data))
-      .catch(err => console.error('Error fetching products:', err));
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch('/api/products');
+        if (!res.ok) throw new Error('Failed to fetch products');
+        const data = await res.json();
+        setAllProducts(data);
+      } catch (error) {
+        console.error('❌ Error fetching products:', error);
+      }
+    };
+    fetchProducts();
   }, []);
 
   const filteredProducts = allProducts.filter(product =>
     product.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const totalPages = Math.max(Math.ceil(filteredProducts.length / itemsPerPage), 1);
+
   const paginatedProducts = filteredProducts.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -41,7 +48,7 @@ export default function ShopPage() {
     <main className="bg-black text-white min-h-screen flex flex-col justify-between">
       <Navbar />
 
-      {/* Search Bar */}
+      {/* Search */}
       <div className="flex justify-center mt-8 mb-4">
         <div className="relative w-full max-w-md">
           <input
@@ -50,7 +57,7 @@ export default function ShopPage() {
             value={searchQuery}
             onChange={e => {
               setSearchQuery(e.target.value);
-              setCurrentPage(1); // Reset to page 1 on new search
+              setCurrentPage(1);
             }}
             className="w-full px-10 py-3 rounded-full bg-zinc-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
           />
@@ -60,7 +67,7 @@ export default function ShopPage() {
 
       {/* Products */}
       <section className="max-w-screen-xl mx-auto px-4 pt-4">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 md:gap-8">
           {paginatedProducts.length > 0 ? (
             paginatedProducts.map(product => (
               <ProductCard
@@ -82,26 +89,26 @@ export default function ShopPage() {
         <button
           onClick={goToPrevious}
           disabled={currentPage === 1}
-          className={`w-6 h-6 rounded-sm text-sm ${
+          className={`w-8 h-8 rounded-sm text-sm font-semibold ${
             currentPage === 1
-              ? 'bg-gray-500 text-white cursor-not-allowed'
-              : 'bg-white text-black'
+              ? 'bg-gray-600 text-white cursor-not-allowed'
+              : 'bg-white text-black hover:bg-red-500 hover:text-white'
           }`}
         >
           &lt;
         </button>
 
-        <button className="w-6 h-6 rounded-sm text-sm bg-red-700 text-white cursor-default">
+        <span className="w-8 h-8 flex items-center justify-center rounded-sm text-sm font-bold bg-red-700 text-white">
           {currentPage}
-        </button>
+        </span>
 
         <button
           onClick={goToNext}
           disabled={currentPage === totalPages}
-          className={`w-6 h-6 rounded-sm text-sm ${
+          className={`w-8 h-8 rounded-sm text-sm font-semibold ${
             currentPage === totalPages
-              ? 'bg-gray-500 text-white cursor-not-allowed'
-              : 'bg-white text-black'
+              ? 'bg-gray-600 text-white cursor-not-allowed'
+              : 'bg-white text-black hover:bg-red-500 hover:text-white'
           }`}
         >
           &gt;
