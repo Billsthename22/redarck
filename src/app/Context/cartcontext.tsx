@@ -3,9 +3,9 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type Product = {
- id: string;
+  id: string;
   title: string;
-  price: string;
+  price: string; // keep as string for formatted price
   description?: string;
   image?: string;
   imageSrc?: string;
@@ -13,13 +13,13 @@ type Product = {
   sizes?: string[];
   selectedColor?: string;
   selectedSize?: string;
+  shirtQuality?: string; // ✅ added
   quantity: number;
   cartKey?: string;
 };
 
-type CartItem = Product & { 
+type CartItem = Product & {
   quantity: number;
-  // Unique cart key for variants
   cartKey?: string;
 };
 
@@ -37,7 +37,6 @@ type CartContextType = {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-// ✅ Safely convert ₦20,000 → 20000
 const cleanPrice = (raw: string): number => {
   if (!raw) return 0;
   const cleaned = raw.replace(/[^\d.]/g, '');
@@ -45,9 +44,9 @@ const cleanPrice = (raw: string): number => {
   return isNaN(num) ? 0 : num;
 };
 
-// Generate unique key for cart items (includes variants)
+// ✅ Include shirtQuality in cart key
 const generateCartKey = (item: Product): string => {
-  return `${item.id}-${item.selectedColor || 'default'}-${item.selectedSize || 'default'}`;
+  return `${item.id}-${item.selectedColor || 'default'}-${item.selectedSize || 'default'}-${item.shirtQuality || 'Standard'}`;
 };
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
@@ -56,66 +55,45 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const addToCart = (item: Product) => {
     const cartKey = generateCartKey(item);
-    
+
     setCartItems((prev) => {
-      // Check if exact same item (including variants) exists
-      const existingIndex = prev.findIndex((cartItem) => {
-        const existingKey = generateCartKey(cartItem);
-        return existingKey === cartKey;
-      });
+      const existingIndex = prev.findIndex((cartItem) => generateCartKey(cartItem) === cartKey);
 
       if (existingIndex >= 0) {
-        // Item exists, increase quantity
         const updatedItems = [...prev];
-        updatedItems[existingIndex] = {
-          ...updatedItems[existingIndex],
-          quantity: updatedItems[existingIndex].quantity + 1
-        };
+        updatedItems[existingIndex].quantity += 1;
         return updatedItems;
       } else {
-        // New item, add to cart
         return [...prev, { ...item, quantity: 1, cartKey }];
       }
     });
-    
+
     setIsOpen(true);
   };
 
   const removeFromCart = (cartKey: string) => {
-    setCartItems((prev) => 
-      prev.filter((item) => generateCartKey(item) !== cartKey)
+    setCartItems((prev) => prev.filter((item) => item.cartKey !== cartKey));
+  };
+
+  const increaseQty = (cartKey: string) => {
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.cartKey === cartKey ? { ...item, quantity: item.quantity + 1 } : item
+      )
     );
   };
 
-  // ✅ Increase item quantity
- const increaseQty = (cartKey: string) => {
-  console.log('Cart context increaseQty called with:', cartKey); // Debug
-  setCartItems((prev) =>
-    prev.map((item) => {
-      const itemKey = generateCartKey(item);
-      return itemKey === cartKey 
-        ? { ...item, quantity: item.quantity + 1 } 
-        : item;
-    })
-  );
-};
-
-  // ✅ Decrease item quantity, remove if quantity becomes 0
- const decreaseQty = (cartKey: string) => {
-  console.log('Cart context decreaseQty called with:', cartKey); // Debug
-  setCartItems((prev) => {
-    const updatedItems = prev.map((item) => {
-      const itemKey = generateCartKey(item);
-      if (itemKey === cartKey) {
-        return { ...item, quantity: Math.max(0, item.quantity - 1) };
-      }
-      return item;
-    });
-    
-    // Remove items with quantity 0
-    return updatedItems.filter((item) => item.quantity > 0);
-  });
-};
+  const decreaseQty = (cartKey: string) => {
+    setCartItems((prev) =>
+      prev
+        .map((item) =>
+          item.cartKey === cartKey
+            ? { ...item, quantity: Math.max(0, item.quantity - 1) }
+            : item
+        )
+        .filter((item) => item.quantity > 0)
+    );
+  };
 
   const toggleCart = () => setIsOpen((prev) => !prev);
 

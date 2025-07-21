@@ -7,10 +7,12 @@ import BannerVerse from './components/BannerVerse';
 import Outpost from './components/Outpost';
 import Footer from './components/Footer';
 import Buffer from './components/buffer'
+import { TypeAnimation } from 'react-type-animation';
 export default function Home() {
+  
   return (
     <main className="min-h-screen bg-black text-white font-sans overflow-x-hidden">
-      <uffer/>
+      <Buffer/>
       <Navbar />
 
       {/* Hero Section */}
@@ -31,16 +33,26 @@ export default function Home() {
         LET MY LIGHT SO <span className="font-[Leckerli_One]">shine</span>
       </h1>
       <h3 className="text-xl mb-6">Not your regular fashion brand</h3>
-      <button className="bg-black text-white px-8 py-4 rounded-full text-xl hover:bg-red-600 transition duration-300">
-        Shop Now
-      </button>
+      <Link href="/shop">
+  <button className="bg-yellow-600 font-[koulen] hover:bg-yellow-700 text-black px-8 py-4 rounded-full text-xl transition duration-300">
+    Shop Now
+  </button>
+</Link>
+
+
+
     </div>
 
     {/* Mobile/Small Screens: Only Button on Top */}
     <div className="absolute top-6 left-0 right-0 flex justify-center sm:hidden">
-      <button className="bg-black text-white px-8 py-4 rounded-full text-xl animate-bounce">
-        Shop Now
-      </button>
+    <Link
+  href="/shop"
+  className="bg-yellow-600 text-black font-[koulen] px-8 py-4 rounded-full text-xl animate-bounce inline-block text-center"
+>
+  Shop Now
+</Link>
+
+
     </div>
   </div>
 </section>
@@ -237,15 +249,31 @@ export default function Home() {
   </p>
 
   <div className="flex justify-center space-x-2 sm:space-x-4 flex-wrap">
-    <button className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded transition font-[koulen] text-[12px] sm:text-[16px]">
-      Instagram
-    </button>
-    <button className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded transition font-[koulen] text-[12px] sm:text-[16px]">
-      WhatsApp
-    </button>
-    <button className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded transition font-[koulen] text-[12px] sm:text-[16px]">
-      Gmail
-    </button>
+  <a
+  href="https://www.instagram.com/redacknation?igsh=M2ZveW1reHlkdmI3" 
+  target="_blank" 
+  rel="noopener noreferrer"
+  className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded transition font-[koulen] text-[12px] sm:text-[16px]"
+>
+  Instagram
+</a>
+
+    <a
+  href="https://wa.me/2348012345678" 
+  target="_blank"
+  rel="noopener noreferrer"
+  className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded transition font-[koulen] text-[12px] sm:text-[16px]"
+>
+  WhatsApp
+</a>
+
+<a
+  href="mailto:redacknation@gmail.com"
+  className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded transition font-[koulen] text-[12px] sm:text-[16px]"
+>
+  Gmail
+</a>
+
   </div>
 </section>
 
