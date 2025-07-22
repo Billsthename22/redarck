@@ -7,9 +7,15 @@ import { Plus, Minus, X } from 'lucide-react';
 // Clean ₦20,000 → 20000
 function cleanPrice(raw: string): number {
   if (!raw) return 0;
-  const cleaned = raw.replace(/[^\d.]/g, '');
-  return isNaN(Number(cleaned)) ? 0 : Number(cleaned);
+  // const cleaned = raw.replace(/[^\d.]/g, '');
+  return isNaN(Number(raw)) ? 0 : Number(raw);
 }
+
+// Generate unique key for cart items (must match your cart context)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const generateCartKey = (item: any): string => {
+  return `${item.id}-${item.selectedColor || 'default'}-${item.selectedSize || 'default'}`;
+};
 
 export default function CartSidebar() {
   const {
@@ -22,12 +28,18 @@ export default function CartSidebar() {
     totalAmount,
   } = useCart();
 
-  const whatsappNumber = '2349155581053'; // ✅ Replace with your own number
+  const whatsappNumber = '2349155581053'; 
 
   const handleCheckout = () => {
     const messageLines = cartItems.map(item => {
       const itemPrice = cleanPrice(item.price) * item.quantity;
-      return `- ${item.title} (Qty: ${item.quantity}) - ₦${itemPrice.toLocaleString()}`;
+      let itemDetails = `${item.title}`;
+      
+      // Add color and size if available
+      if (item.selectedColor) itemDetails += ` - Color: ${item.selectedColor}`;
+      if (item.selectedSize) itemDetails += ` - Size: ${item.selectedSize}`;
+      
+      return `- ${itemDetails} (Qty: ${item.quantity}) - ₦${itemPrice.toLocaleString()}`;
     });
 
     const message = `Hello! I want to place an order:\n\n${messageLines.join('\n')}\n\nTotal: ₦${totalAmount.toLocaleString()}`;
@@ -45,9 +57,9 @@ export default function CartSidebar() {
     >
       {/* Header */}
       <div className="flex justify-between items-center mb-6 border-b border-gray-700 pb-2">
-        <h2 className="text-lg font-bold uppercase tracking-wide text-yellow-400">Your Cart</h2>
+        <h2 className="text-lg font-bold uppercase tracking-wide text-red-400">Your Cart</h2>
         <button onClick={toggleCart}>
-          <X className="w-6 h-6 text-yellow-400 hover:text-yellow-500" />
+          <X className="w-6 h-6 text-red-400 hover:text-red-500" />
         </button>
       </div>
 
@@ -56,60 +68,110 @@ export default function CartSidebar() {
         <p className="text-gray-400 text-sm text-center mt-10">Your cart is empty.</p>
       ) : (
         <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1 custom-scrollbar">
-          {cartItems.map((item) => (
-            <div key={item.id} className="flex gap-3 items-center border-b border-gray-700 pb-3">
-              <Image
-                src={item.image}
-                alt={item.title}
-                width={60}
-                height={60}
-                className="rounded object-cover"
-              />
-              <div className="flex-1">
-                <p className="text-sm font-semibold">{item.title}</p>
+          {cartItems.map((item, index) => {
+            const cartKey = generateCartKey(item);
+            return (
+              <div key={`${cartKey}-${index}`} className="flex gap-3 items-start border-b border-gray-700 pb-3">
+                <Image
+                  src={item.image || item.imageSrc || '/placeholder.png'}
+                  alt={item.title || 'Product'}
+                  width={60}
+                  height={60}
+                  className="rounded object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = '/placeholder.png';
+                  }}
+                />
+                <div className="flex-1">
+                  {/* Product Title */}
+                  <h3 className="text-sm font-semibold text-white mb-1">{item.title}</h3>
+                  
+                  {/* Product Description */}
+                  {item.description && (
+                    <p className="text-xs text-white-400 mb-2 line-clamp-6">
+                      {item.description}
+                    </p>
+                  )}
 
-                {/* Quantity */}
-                <div className="flex items-center gap-2 mt-2">
-                  <button
-                    onClick={() => decreaseQty(item.id)}
-                    className="px-2 py-1 border border-yellow-400 text-yellow-400 rounded hover:bg-yellow-400 hover:text-black text-xs"
-                  >
-                    <Minus size={12} />
-                  </button>
-                  <span className="text-sm">{item.quantity}</span>
-                  <button
-                    onClick={() => increaseQty(item.id)}
-                    className="px-2 py-1 border border-yellow-400 text-yellow-400 rounded hover:bg-yellow-400 hover:text-black text-xs"
-                  >
-                    <Plus size={12} />
-                  </button>
+                  {/* Selected Variants */}
+                  {(item.selectedColor || item.selectedSize) && (
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {item.selectedColor && (
+                        <span className="text-xs bg-gray-800 px-2 py-1 rounded">
+                          Color: {item.selectedColor}
+                        </span>
+                      )}
+                      {item.selectedSize && (
+                        <span className="text-xs bg-gray-800 px-2 py-1 rounded">
+                          Size: {item.selectedSize}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Price */}
+                  <p className="text-sm font-semibold text-white-400 mb-2">
+                    {item.price}
+                  </p>
+
+                  {/* Quantity Controls */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        console.log('Decreasing:', cartKey);
+                        decreaseQty(cartKey);
+                      }}
+                      className="px-2 py-1 border border-red-400 text-white-400 rounded hover:bg-red-200 hover:text-black text-xs"
+                    >
+                      <Minus size={12} />
+                    </button>
+                    <span className="text-sm min-w-[20px] text-center">{item.quantity}</span>
+                    <button
+                      onClick={() => {
+                        console.log('Increasing:', cartKey);
+                        increaseQty(cartKey);
+                      }}
+                      className="px-2 py-1 border border-red-400 text-white-400 rounded hover:bg-red-200 hover:text-black text-xs"
+                    >
+                      <Plus size={12} />
+                    </button>
+                  </div>
+
+                  {/* Subtotal */}
+                  <p className="text-xs text-gray-300 mt-2">
+                    Subtotal: ₦{(cleanPrice(item.price) * item.quantity).toLocaleString()}
+                  </p>
                 </div>
 
-                <p className="text-xs text-gray-400 mt-1">
-                  ₦{(cleanPrice(item.price) * item.quantity).toLocaleString()}
-                </p>
+                {/* Remove Button */}
+                <button
+                  onClick={() => {
+                    console.log('Removing:', cartKey);
+                    removeFromCart(cartKey);
+                  }}
+                  className="text-red-500 font-bold hover:text-red-400 ml-2"
+                >
+                  ×
+                </button>
               </div>
-
-              <button
-                onClick={() => removeFromCart(item.id)}
-                className="text-red-500 font-bold hover:text-red-400"
-              >
-                ×
-              </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
       {/* Footer */}
       {cartItems.length > 0 && (
         <div className="mt-6 border-t border-gray-700 pt-4">
-          <p className="font-semibold text-sm mb-2">
-            Total: <span className="text-yellow-400">₦{totalAmount.toLocaleString()}</span>
-          </p>
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm">Items: {cartItems.reduce((sum, item) => sum + item.quantity, 0)}</span>
+            <span className="font-semibold text-red-400">
+              Total: ₦{totalAmount.toLocaleString()}
+            </span>
+          </div>
           <button
             onClick={handleCheckout}
-            className="w-full bg-yellow-400 hover:bg-yellow-500 text-black py-2 mt-2 text-sm font-semibold rounded transition"
+            className="w-full bg-red-500 hover:bg-red-700 text-black py-2 mt-2 text-sm font-semibold rounded transition"
           >
             Go to Checkout
           </button>

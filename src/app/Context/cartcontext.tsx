@@ -3,20 +3,32 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type Product = {
-  id: number;
+  id: string;
   title: string;
-  image: string;
-  price: string; // e.g., '₦20,000'
+  price: string; // keep as string for formatted price
+  description?: string;
+  image?: string;
+  imageSrc?: string;
+  colors?: string[];
+  sizes?: string[];
+  selectedColor?: string;
+  selectedSize?: string;
+  shirtQuality?: string; // ✅ added
+  quantity: number;
+  cartKey?: string;
 };
 
-type CartItem = Product & { quantity: number };
+type CartItem = Product & {
+  quantity: number;
+  cartKey?: string;
+};
 
 type CartContextType = {
   cartItems: CartItem[];
   addToCart: (item: Product) => void;
-  removeFromCart: (id: number) => void;
-  increaseQty: (id: number) => void;
-  decreaseQty: (id: number) => void;
+  removeFromCart: (cartKey: string) => void;
+  increaseQty: (cartKey: string) => void;
+  decreaseQty: (cartKey: string) => void;
   isOpen: boolean;
   toggleCart: () => void;
   totalAmount: number;
@@ -25,12 +37,16 @@ type CartContextType = {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-// ✅ Safely convert ₦20,000 → 20000
 const cleanPrice = (raw: string): number => {
-  if (!raw) return 0;
-  const cleaned = raw.replace(/[^\d.]/g, '');
-  const num = Number(cleaned);
+  if (!raw) return 0; // remove all non-numeric characters except dot and minus
+  // const cleaned = raw.replace(/[^\d.]/g, '');
+  const num = Number(raw);
   return isNaN(num) ? 0 : num;
+};
+
+// ✅ Include shirtQuality in cart key
+const generateCartKey = (item: Product): string => {
+  return `${item.id}-${item.selectedColor || 'default'}-${item.selectedSize || 'default'}-${item.shirtQuality || 'Standard'}`;
 };
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
@@ -38,39 +54,44 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const addToCart = (item: Product) => {
+    const cartKey = generateCartKey(item);
+
     setCartItems((prev) => {
-      const exists = prev.find((i) => i.id === item.id);
-      if (exists) {
-        return prev.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
-        );
+      const existingIndex = prev.findIndex((cartItem) => generateCartKey(cartItem) === cartKey);
+
+      if (existingIndex >= 0) {
+        const updatedItems = [...prev];
+        updatedItems[existingIndex].quantity += 1;
+        return updatedItems;
+      } else {
+        return [...prev, { ...item, quantity: 1, cartKey }];
       }
-      return [...prev, { ...item, quantity: 1 }];
     });
+
     setIsOpen(true);
   };
 
-  const removeFromCart = (id: number) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+  const removeFromCart = (cartKey: string) => {
+    setCartItems((prev) => prev.filter((item) => item.cartKey !== cartKey));
   };
 
-  // ✅ Increase item quantity
-  const increaseQty = (id: number) => {
+  const increaseQty = (cartKey: string) => {
     setCartItems((prev) =>
       prev.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+        item.cartKey === cartKey ? { ...item, quantity: item.quantity + 1 } : item
       )
     );
   };
 
-  // ✅ Decrease item quantity, min 1
-  const decreaseQty = (id: number) => {
+  const decreaseQty = (cartKey: string) => {
     setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? { ...item, quantity: Math.max(1, item.quantity - 1) }
-          : item
-      )
+      prev
+        .map((item) =>
+          item.cartKey === cartKey
+            ? { ...item, quantity: Math.max(0, item.quantity - 1) }
+            : item
+        )
+        .filter((item) => item.quantity > 0)
     );
   };
 

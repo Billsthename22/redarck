@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Navbar from '@/app/components/Navbar';
+import Adminnavbar from '@/app/components/Adminnavbar'
 import Image from 'next/image';
 import { Pencil, Trash2, UploadCloud } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -66,7 +66,7 @@ export default function AdminProductPage() {
 
   return (
     <main className="bg-black text-white min-h-screen px-4 py-8 space-y-16">
-      <Navbar />
+      <Adminnavbar />
 
       {/* Header */}
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-12">

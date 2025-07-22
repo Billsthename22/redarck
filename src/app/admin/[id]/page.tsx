@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Navbar from '@/app/components/Navbar';
+import Adminnavbar from '@/app/components/Adminnavbar';
 import Image from 'next/image';
 import { Pencil, Trash, UploadCloud } from 'lucide-react';
 
@@ -45,7 +47,7 @@ export default function AdminProductDetail() {
 
   return (
     <main className="bg-black text-white min-h-screen px-4 py-8">
-      <Navbar />
+      <Adminnavbar />
 
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-12">
         {/* Image */}
