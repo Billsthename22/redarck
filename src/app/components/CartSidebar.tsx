@@ -7,8 +7,8 @@ import { Plus, Minus, X } from 'lucide-react';
 // Clean ₦20,000 → 20000
 function cleanPrice(raw: string): number {
   if (!raw) return 0;
-  const cleaned = raw.replace(/[^\d.]/g, '');
-  return isNaN(Number(cleaned)) ? 0 : Number(cleaned);
+  // const cleaned = raw.replace(/[^\d.]/g, '');
+  return isNaN(Number(raw)) ? 0 : Number(raw);
 }
 
 // Generate unique key for cart items (must match your cart context)
@@ -28,7 +28,7 @@ export default function CartSidebar() {
     totalAmount,
   } = useCart();
 
-  const whatsappNumber = '2348012345678'; 
+  const whatsappNumber = '2349155581053'; 
 
   const handleCheckout = () => {
     const messageLines = cartItems.map(item => {

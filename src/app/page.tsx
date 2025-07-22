@@ -7,7 +7,6 @@ import BannerVerse from './components/BannerVerse';
 import Outpost from './components/Outpost';
 import Footer from './components/Footer';
 import Buffer from './components/buffer'
-import { TypeAnimation } from 'react-type-animation';
 export default function Home() {
   
   return (
@@ -259,7 +258,7 @@ export default function Home() {
 </a>
 
     <a
-  href="https://wa.me/2348012345678" 
+  href="https://wa.me/2349155581053" 
   target="_blank"
   rel="noopener noreferrer"
   className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded transition font-[koulen] text-[12px] sm:text-[16px]"

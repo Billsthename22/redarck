@@ -38,9 +38,9 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const cleanPrice = (raw: string): number => {
-  if (!raw) return 0;
-  const cleaned = raw.replace(/[^\d.]/g, '');
-  const num = Number(cleaned);
+  if (!raw) return 0; // remove all non-numeric characters except dot and minus
+  // const cleaned = raw.replace(/[^\d.]/g, '');
+  const num = Number(raw);
   return isNaN(num) ? 0 : num;
 };
 

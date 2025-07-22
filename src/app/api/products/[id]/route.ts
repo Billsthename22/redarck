@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from 'next/server';
 import { connectDB } from '@/app/api/lib/mongodb';
 import Product from '@/app/api/model/Product';

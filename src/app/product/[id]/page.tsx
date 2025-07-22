@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -49,7 +50,7 @@ export default function ProductPage() {
     addToCart({
       id: product._id,
       title: product.title,
-      price: finalPrice,
+      price: finalPrice.toString(),
       description: product.description,
       image: product.imageSrc,
       imageSrc: product.imageSrc,

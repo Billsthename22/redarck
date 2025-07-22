@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
       price: parseFloat(price),
       description: description || '',
       shirtQuality: shirtQuality || '',
-      colors: colors ? [colors] : [],
+      colors: colors ? colors.split(',').map((c) => c.trim()) : [],
       sizes: sizes ? sizes.split(',').map((s) => s.trim()) : [],
       imageSrc,
       colorImages: colorImagePaths,

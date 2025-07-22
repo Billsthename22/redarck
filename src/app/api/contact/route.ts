@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { Resend} from 'resend';
 import { connectDB } from '@/app/api/lib/mongodb';
 import contact from '../model/contact';
 
