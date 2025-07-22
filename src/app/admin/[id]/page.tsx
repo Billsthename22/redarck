@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Adminnavbar from '@/app/components/Adminnavbar'
+import Adminnavbar from '@/app/components/Adminnavbar';
 import Image from 'next/image';
 import { Pencil, Trash, UploadCloud } from 'lucide-react';
 
