@@ -5,6 +5,7 @@ import Adminnavbar from "@/app/components/Adminnavbar";
 import { useState, useEffect } from "react";
 import { Search, Plus, UploadCloud } from "lucide-react";
 import ProductCard from "../components/Productcard";
+import Image from "next/image";
 
 export default function AdminShopPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -259,7 +260,7 @@ export default function AdminShopPage() {
                   />
                 </label>
                 {previewImage && (
-                  <img
+                  <Image
                     src={previewImage}
                     alt="Preview"
                     className="mt-2 w-full h-48 object-cover rounded"
@@ -292,7 +293,7 @@ export default function AdminShopPage() {
                 {colorPreviews.length > 0 && (
                   <div className="flex gap-2 mt-4 overflow-x-auto">
                     {colorPreviews.map((src, i) => (
-                      <img
+                      <Image
                         key={i}
                         src={src}
                         alt={`color-${i}`}

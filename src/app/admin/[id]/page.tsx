@@ -145,10 +145,9 @@ export default function AdminProductDetail() {
               </label>
 
               {previewImage && (
-                <img
+                <Image
                   src={previewImage}
-                  className="w-full h-48 object-cover rounded mt-2"
-                />
+                  className="w-full h-48 object-cover rounded mt-2" alt={''}                />
               )}
             </div>
 

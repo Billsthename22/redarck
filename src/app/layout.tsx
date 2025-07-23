@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-page-custom-font */
 // src/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";

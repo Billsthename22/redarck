@@ -10,7 +10,15 @@ export default function AdminProductPage() {
   const router = useRouter();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [product, setProduct] = useState({
+  const [product, setProduct] = useState<{
+    id: number;
+    title: string;
+    price: string;
+    image: string;
+    description: string;
+    colors: string[];
+    suggestions: number[];
+  } | null>({
     id: 1,
     title: 'LOREM IPSUM',
     price: 'N20,000',
@@ -22,11 +30,11 @@ export default function AdminProductPage() {
   });
 
   const [formData, setFormData] = useState({
-    title: product.title,
-    price: product.price,
-    description: product.description,
-    image: product.image,
-    colors: product.colors,
+    title: product?.title ?? '',
+    price: product?.price ?? '',
+    description: product?.description ?? '',
+    image: product?.image ?? '',
+    colors: product?.colors ?? [],
     sizes: '',
     availableColors: '',
   });
@@ -154,7 +162,7 @@ export default function AdminProductPage() {
                 </label>
               </label>
               {formData.image && (
-                <img src={formData.image} alt="Preview" className="mt-2 w-full h-48 object-cover rounded" />
+                <Image src={formData.image} alt="Preview" className="mt-2 w-full h-48 object-cover rounded" />
               )}
               <textarea
                 placeholder="Description"
@@ -178,7 +186,7 @@ export default function AdminProductPage() {
               </label>
               <div className="flex gap-2 overflow-x-auto mt-2">
                 {formData.colors.map((src, i) => (
-                  <img key={i} src={src} alt={`Color ${i}`} className="w-16 h-16 object-cover rounded border" />
+                  <Image key={i} src={src} alt={`Color ${i}`} className="w-16 h-16 object-cover rounded border" />
                 ))}
               </div>
               <input

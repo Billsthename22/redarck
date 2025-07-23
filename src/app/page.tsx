@@ -27,7 +27,7 @@ export default function Home() {
     />
 
     {/* Desktop/Large Screens: Full Content */}
-    <div className="absolute inset-0 flex flex-col items-center justify-start text-center px-4 pt-16 hidden sm:flex">
+    <div className="absolute inset-0  flex-col items-center justify-start text-center px-4 pt-16 hidden sm:flex">
       <h1 className="text-5xl font-bold mb-4 leading-tight">
         LET MY LIGHT SO <span className="font-[Leckerli_One]">shine</span>
       </h1>
@@ -67,7 +67,7 @@ export default function Home() {
   <div className="hidden lg:flex flex-row gap-4 max-w-[1320px] w-full">
     {/* Left Big Box */}
     <Link href="/shop" className="relative w-[640px] h-[639px] rounded-[37px] overflow-hidden block group">
-      <img 
+      <Image
         src="/newrelease.png" 
         alt="New Release" 
         className="w-full h-full object-cover group-hover:scale-110 transition"
@@ -80,7 +80,7 @@ export default function Home() {
     {/* Right Column */}
     <div className="flex flex-col justify-between gap-4">
       <Link href="/customorder" className="relative w-[640px] h-[310px] rounded-[37px] overflow-hidden block group">
-        <img 
+        <Image
           src="/customorder .png" 
           alt="Custom Order" 
           className="w-full h-full object-cover group-hover:scale-110 transition"
@@ -104,7 +104,7 @@ export default function Home() {
   {/* Tablet View */}
   <div className="hidden sm:flex lg:hidden flex-col gap-4 w-full max-w-[768px]">
     <Link href="/shop" className="relative w-full h-[400px] rounded-[30px] overflow-hidden block group">
-      <img 
+      <Image 
         src="/newrelease.png" 
         alt="New Release"
         className="w-full h-full object-cover group-hover:scale-105 transition"
@@ -115,7 +115,7 @@ export default function Home() {
     </Link>
 
     <Link href="/customorder" className="relative w-full h-[300px] rounded-[30px] overflow-hidden block group">
-      <img 
+      <Image
         src="/customorder .png" 
         alt="Custom Order"
         className="w-full h-full object-cover group-hover:scale-105 transition"
@@ -138,7 +138,7 @@ export default function Home() {
   {/* Mobile View */}
   <div className="flex flex-col gap-4 sm:hidden w-full">
     <Link href="/shop" className="relative w-full h-[300px] rounded-[20px] overflow-hidden block group">
-      <img
+      <Image
         src="/newrelease.png"
         alt="New Release"
         className="w-full h-full object-cover group-hover:scale-105 transition"
@@ -149,7 +149,7 @@ export default function Home() {
     </Link>
 
     <Link href="/customorder" className="relative w-full h-[250px] rounded-[20px] overflow-hidden block group">
-      <img
+      <Image
         src="/customorder .png"
         alt="Custom Order"
         className="w-full h-full object-cover group-hover:scale-105 transition"
@@ -199,7 +199,7 @@ export default function Home() {
 
   {/* Second Paragraph */}
   <p className="mt-8 text-[16px] md:text-[18px] font-bold leading-[160%] uppercase">
-    OVIE'S VISION FOR REDACT NATION GOES BEYOND JUST CLOTHING; IT'S ABOUT BUILDING A
+    OVIE&apos;S VISION FOR REDACT NATION GOES BEYOND JUST CLOTHING; IT&apos;S ABOUT BUILDING A
     GOD-LOVING COMMUNITY. WE AIM TO CREATE A SPACE WHERE CHRISTIANS FEEL EMPOWERED
     AND FREE TO EXPRESS THEIR UNWAVERING PASSION FOR CHRIST THROUGH THEIR PERSONAL
     STYLE. EACH GARMENT IS DESIGNED TO INSPIRE AND UPLIFT, ALLOWING YOU TO WEAR YOUR
@@ -242,9 +242,9 @@ export default function Home() {
   </h2>
 
   <p className="max-w-xl mx-auto font-[koulen] font-normal text-[14px] sm:text-[16px] leading-[130%] tracking-[0%] text-gray-400 mb-6">
-    Have a question about our designs, an inquiry about an order, or just want to share your passion for Christian fashion? We'd love to hear from you! <br /><br />
+    Have a question about our designs, an inquiry about an order, or just want to share your passion for Christian fashion? We&apos;d love to hear from you! <br /><br />
     To stay updated on our latest collections and join our community! <br /><br />
-    We're committed to creating a God-loving community and are always here to help. We'll get back to you as soon as possible!
+    We&apos;re committed to creating a God-loving community and are always here to help. We&apos;ll get back to you as soon as possible!
   </p>
 
   <div className="flex justify-center space-x-2 sm:space-x-4 flex-wrap">
