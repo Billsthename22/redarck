@@ -1,17 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { connectDB } from '../lib/mongodb'; // Adjust path as needed
+import { connectDB } from '../lib/mongodb';
 import Admin from '../model/Admin';
 
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
 
-    // Parse the request body
     const { fullName, email, address, password } = await request.json();
 
-    // Validate required fields
     if (!fullName || !email || !address || !password) {
       return NextResponse.json(
         { error: 'All fields are required' },
@@ -19,7 +17,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if user already exists with the provided email
     const existingUser = await Admin.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
@@ -28,33 +25,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Hash the password using bcryptjs
-    const saltRounds = 12;
-    const hashedPassword = await bcryptjs.hash(password, saltRounds);
+    const hashedPassword = await bcryptjs.hash(password, 12);
 
-    // Create a new user
-    const user = new Admin({
-      fullName,
-      email,
-
-      address,
-
-      password: hashedPassword,
-    });
-
-    // Save the user to the database
+    const user = new Admin({ fullName, email, address, password: hashedPassword });
     await user.save();
 
-    // Generate a JWT token for the user
     const token = jwt.sign(
       { userId: user._id, email: user.email },
       process.env.JWT_SECRET!,
       { expiresIn: '7d' }
     );
 
-    // Return the response with the user object (excluding password) and the token
     const userWithoutPassword = user.toObject();
-    delete userWithoutPassword.password; // Remove password from the response
+    delete userWithoutPassword.password;
 
     return NextResponse.json(
       {
@@ -64,7 +47,6 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-
   } catch (error) {
     console.error('Registration error:', error);
     return NextResponse.json(
