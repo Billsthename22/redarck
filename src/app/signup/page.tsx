@@ -8,7 +8,7 @@ export default function AdminSignupPage() {
   const router = useRouter();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
-
+  const [address, setAddress] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -22,7 +22,7 @@ export default function AdminSignupPage() {
       const response = await fetch('/api/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fullName, email, password }),
+        body: JSON.stringify({ fullName, email, address, password }),
       });
   
       const result = await response.json();
@@ -35,10 +35,7 @@ export default function AdminSignupPage() {
       localStorage.setItem('isAdmin', 'true');
       setSuccess('Admin account created successfully');
   
-      // ✅ Show alert
       alert('Account registered successfully');
-  
-      // ✅ Redirect to login
       router.push('/adminlogin');
     } catch (err) {
       console.error(err);
@@ -79,6 +76,18 @@ export default function AdminSignupPage() {
               required
               className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
               placeholder="admin@example.com"
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-300 mb-1">Address</label>
+            <input
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              required
+              className="w-full px-4 py-3 rounded-xl bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+              placeholder="Your address"
             />
           </div>
 
