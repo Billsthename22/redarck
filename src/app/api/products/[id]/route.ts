@@ -11,7 +11,7 @@ export async function GET(
 ) {
   try {
     await connectDB();
-    const id = params.id;
+    const { id }= await params;
 
     if (!ObjectId.isValid(id)) {
       return NextResponse.json({ error: 'Invalid product ID' }, { status: 400 });
