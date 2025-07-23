@@ -4,6 +4,8 @@ export interface IAdmin {
   fullName: string;
   email: string;
 
+  address: string;
+
   password: string;
   createdAt: Date;
   updatedAt: Date;
@@ -23,6 +25,12 @@ fullName: {
     lowercase: true,
     trim: true,
     match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email address']
+  },
+
+  address: {
+    type: String,
+    required: [true, 'Address is required'],
+    trim: true
   },
 
   password: {

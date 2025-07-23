@@ -6,6 +6,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { CartProvider } from "@/app/Context/cartcontext";
 import CartSidebar from "@/app/components/CartSidebar"; //  Import sidebar
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

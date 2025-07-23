@@ -174,6 +174,22 @@ export default function Home() {
 
       <BannerVerse />
 
+
+      {/* Chat Section */}
+      <section className="text-center py-10 px-6">
+        <h2 className="text-2xl font-bold mb-4">LETS CHAT</h2>
+        <p className="max-w-xl mx-auto text-gray-400 mb-6">
+          JOIN THE MISSION. COMMIT TO SHINING. BE REMINDED YOU&apos;RE CALLED TO LIGHT UP
+          EVERY SPACE YOU STEP INTO. LET THIS BE A SYMBOL THAT YOU AREN&apos;T WALKING ALONE
+          BUT WITH THE ONE WHO GOES AHEAD OF YOU.
+        </p>
+        <div className="flex justify-center space-x-4">
+          <button className="bg-white text-black px-4 py-2 rounded">Instagram</button>
+          <button className="bg-white text-black px-4 py-2 rounded">WhatsApp</button>
+          <button className="bg-white text-black px-4 py-2 rounded">Email</button>
+        </div>
+      </section>
+
       {/* Our Why Section */}
       <section id='about' className="mt-8 bg-[#9C1A1A] text-white flex flex-col md:flex-row items-center justify-center max-w-[1300px] h-[639px] mx-auto rounded-[30px] overflow-hidden px-8 py-8 gap-6">
 
@@ -277,6 +293,7 @@ export default function Home() {
 </section>
 
 <Footer/>
+
     </main>
   );
 }
