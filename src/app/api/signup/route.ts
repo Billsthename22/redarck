@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import bcryptjs from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { connectDB } from '../lib/mongodb';
-import Admin from '../model/Admin';
+import { connectDB } from '@/app/api/lib/mongodb';
+import Admin from '@/app/api/model/Admin';
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,6 +10,7 @@ export async function POST(request: NextRequest) {
 
     const { fullName, email, address, password } = await request.json();
 
+    // validate
     if (!fullName || !email || !address || !password) {
       return NextResponse.json(
         { error: 'All fields are required' },
@@ -17,6 +18,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // prevent duplicate
     const existingUser = await Admin.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
@@ -25,25 +27,32 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const hashedPassword = await bcryptjs.hash(password, 12);
-
-    const user = new Admin({ fullName, email, address, password: hashedPassword });
+    // hash & save
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const user = new Admin({
+      fullName,
+      email,
+      address,
+      password: hashedPassword,
+    });
     await user.save();
 
+    // issue token
     const token = jwt.sign(
       { userId: user._id, email: user.email },
       process.env.JWT_SECRET!,
       { expiresIn: '7d' }
     );
 
-    const userWithoutPassword = user.toObject();
-    delete userWithoutPassword.password;
+    // strip password from response
+    const userObj = user.toObject();
+    delete userObj.password;
 
     return NextResponse.json(
       {
         message: 'User registered successfully',
         token,
-        user: userWithoutPassword,
+        user: userObj,
       },
       { status: 201 }
     );
