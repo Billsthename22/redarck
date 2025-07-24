@@ -1,55 +1,83 @@
 'use client';
+import Image from 'next/image';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import Navbar from './components/Navbar';
 import BannerVerse from './components/BannerVerse';
 import Outpost from './components/Outpost';
 import Footer from './components/Footer';
 import Buffer from './components/buffer';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 640);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <main className="min-h-screen bg-black text-white font-sans overflow-x-hidden">
       <Buffer />
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="relative w-full bg-black px-6 py-12">
-        <div className="relative w-full max-w-[1296px] mx-auto aspect-[1296/702] overflow-hidden shadow-lg rounded-[36px]">
-          <video
-            src="/bg.mp4"
-            className="w-full h-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-          />
+     {/* ✅ Responsive Hero Section */}
+<section className="relative w-full bg-black px-6 pt-[100px] pb-12">
+  {/* Desktop Video Section */}
+  <div className="relative w-full max-w-[1296px] mx-auto aspect-[1296/702] overflow-hidden shadow-lg rounded-[36px] sm:block hidden">
+    <video
+      src="/bg.mp4"
+      className="w-full h-full object-cover"
+      autoPlay
+      muted
+      loop
+      playsInline
+    />
 
-          {/* Desktop/Large Screens: Full Content */}
-          <div className="absolute inset-0 flex-col items-center justify-start text-center px-4 pt-16 hidden sm:flex">
-            <h1 className="text-5xl font-bold mb-4 leading-tight">
-              LET MY LIGHT SO <span className="font-[Leckerli_One]">shine</span>
-            </h1>
-            <h3 className="text-xl mb-6">Not your regular fashion brand</h3>
-            <Link href="/shop">
-              <button className="bg-yellow-600 font-[koulen] hover:bg-yellow-700 text-black px-8 py-4 rounded-full text-xl transition duration-300">
-                Shop Now
-              </button>
-            </Link>
-          </div>
+    {/* Desktop Content */}
+    <div className="absolute inset-0 flex flex-col items-center justify-start text-center px-4 pt-[100px]">
+      <h1 className="text-5xl font-bold mb-4 leading-tight text-white">
+        LET MY LIGHT SO <span className="font-[Leckerli_One]">shine</span>
+      </h1>
+      <h3 className="text-xl mb-6 text-white">Not your regular fashion brand</h3>
+      <Link href="/shop">
+        <button className="bg-yellow-600 font-[koulen] hover:bg-yellow-700 text-black px-8 py-4 rounded-full text-xl transition duration-300">
+          Shop Now
+        </button>
+      </Link>
+    </div>
+  </div>
 
-          {/* Mobile/Small Screens: Only Button on Top */}
-          <div className="absolute top-6 left-0 right-0 flex justify-center sm:hidden">
-            <Link
-              href="/shop"
-              className="bg-yellow-600 text-black font-[koulen] px-8 py-4 rounded-full text-xl animate-bounce inline-block text-center"
-            >
-              Shop Now
-            </Link>
-          </div>
-        </div>
-      </section>
+  {/* Mobile Video Section */}
+{/* Mobile Video Section */}
+<div className="relative w-full block sm:hidden rounded-[24px] overflow-hidden">
+  <video
+    src="/mobile redacknation bg.mov"
+    className="w-full h-auto object-cover"
+    autoPlay
+    muted
+    loop
+    playsInline
+  />
+
+  {/* Mobile Content */}
+  <div className="absolute inset-0 flex flex-col items-center justify-start text-center px-4 pt-[140px]">
+    <h1 className="text-[32px] font-bold mb-2 leading-tight text-white">
+      LET MY LIGHT SO <span className="font-[Leckerli_One]">shine</span>
+    </h1>
+    <h3 className="text-[16px] mb-4 text-white">Not your regular fashion brand</h3>
+    <Link href="/shop">
+      <button className="bg-yellow-600 font-[koulen] hover:bg-yellow-700 text-black px-8 py-4 rounded-full text-xl transition duration-300">
+        Shop Now
+      </button>
+    </Link>
+  </div>
+</div>
+
+</section>
 
       <BannerVerse />
 
@@ -138,7 +166,7 @@ export default function Home() {
             className="relative w-full h-[300px] rounded-[30px] overflow-hidden block group"
           >
             <Image
-              src="/customorder.png"
+              src="/customorder .png"
               alt="Custom Order"
               fill
               className="object-cover group-hover:scale-105 transition"

@@ -11,7 +11,8 @@ export default function Navbar() {
   const { totalQuantity, toggleCart } = useCart();
 
   return (
-    <nav className="w-full bg-black text-white border-b border-gray-800 px-6 py-4">
+   <nav className="fixed top-0 left-0 z-50 w-full bg-black text-white border-b border-gray-800 px-6 py-4">
+
       <div className="hidden md:grid grid-cols-3 items-center">
         {/* Left Nav Items */}
         <div className="flex justify-evenly items-center">
