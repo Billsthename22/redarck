@@ -7,7 +7,7 @@ import BannerVerse from './components/BannerVerse';
 import Outpost from './components/Outpost';
 import Footer from './components/Footer';
 import Buffer from './components/buffer';
-import { useEffect, useState } from 'react';
+
 
 export default function Home() {
 
