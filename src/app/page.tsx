@@ -10,14 +10,7 @@ import Buffer from './components/buffer';
 import { useEffect, useState } from 'react';
 
 export default function Home() {
-  const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 640);
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   return (
     <main className="min-h-screen bg-black text-white font-sans overflow-x-hidden">
