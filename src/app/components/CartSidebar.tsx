@@ -4,18 +4,11 @@ import { useCart } from '@/app/Context/cartcontext';
 import Image from 'next/image';
 import { Plus, Minus, X } from 'lucide-react';
 
-// Clean ₦20,000 → 20000
 function cleanPrice(raw: string): number {
   if (!raw) return 0;
-  // const cleaned = raw.replace(/[^\d.]/g, '');
-  return isNaN(Number(raw)) ? 0 : Number(raw);
+  const cleaned = raw.replace(/[₦,]/g, '').trim();
+  return isNaN(Number(cleaned)) ? 0 : Number(cleaned);
 }
-
-// Generate unique key for cart items (must match your cart context)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const generateCartKey = (item: any): string => {
-  return `${item.id}-${item.selectedColor || 'default'}-${item.selectedSize || 'default'}`;
-};
 
 export default function CartSidebar() {
   const {
@@ -28,17 +21,16 @@ export default function CartSidebar() {
     totalAmount,
   } = useCart();
 
-  const whatsappNumber = '2349155581053'; 
+  const whatsappNumber = '2347072109057';
 
   const handleCheckout = () => {
     const messageLines = cartItems.map(item => {
       const itemPrice = cleanPrice(item.price) * item.quantity;
       let itemDetails = `${item.title}`;
-      
-      // Add color and size if available
+
       if (item.selectedColor) itemDetails += ` - Color: ${item.selectedColor}`;
       if (item.selectedSize) itemDetails += ` - Size: ${item.selectedSize}`;
-      
+
       return `- ${itemDetails} (Qty: ${item.quantity}) - ₦${itemPrice.toLocaleString()}`;
     });
 
@@ -55,7 +47,6 @@ export default function CartSidebar() {
         isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}
     >
-      {/* Header */}
       <div className="flex justify-between items-center mb-6 border-b border-gray-700 pb-2">
         <h2 className="text-lg font-bold uppercase tracking-wide text-red-400">Your Cart</h2>
         <button onClick={toggleCart}>
@@ -63,108 +54,95 @@ export default function CartSidebar() {
         </button>
       </div>
 
-      {/* Empty */}
       {cartItems.length === 0 ? (
-        <p className="text-gray-400 text-sm text-center mt-10">Your cart is empty.</p>
+        <p className="text-white/60 text-sm text-center mt-10">Your cart is empty.</p>
       ) : (
         <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-1 custom-scrollbar">
-          {cartItems.map((item, index) => {
-            const cartKey = generateCartKey(item);
-            return (
-              <div key={`${cartKey}-${index}`} className="flex gap-3 items-start border-b border-gray-700 pb-3">
+          {cartItems.map((item, index) => (
+            <div
+              key={item.cartKey || index}
+              className="flex gap-3 items-start border-b border-gray-700 pb-3"
+            >
+              <div className="relative w-[60px] h-[60px] flex-shrink-0">
                 <Image
                   src={item.image || item.imageSrc || '/placeholder.png'}
                   alt={item.title || 'Product'}
-                  width={60}
-                  height={60}
+                  fill
                   className="rounded object-cover"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = '/placeholder.png';
-                  }}
                 />
-                <div className="flex-1">
-                  {/* Product Title */}
-                  <h3 className="text-sm font-semibold text-white mb-1">{item.title}</h3>
-                  
-                  {/* Product Description */}
-                  {item.description && (
-                    <p className="text-xs text-white-400 mb-2 line-clamp-6">
-                      {item.description}
-                    </p>
-                  )}
+              </div>
 
-                  {/* Selected Variants */}
-                  {(item.selectedColor || item.selectedSize) && (
-                    <div className="flex flex-wrap gap-2 mb-2">
-                      {item.selectedColor && (
-                        <span className="text-xs bg-gray-800 px-2 py-1 rounded">
-                          Color: {item.selectedColor}
-                        </span>
-                      )}
-                      {item.selectedSize && (
-                        <span className="text-xs bg-gray-800 px-2 py-1 rounded">
-                          Size: {item.selectedSize}
-                        </span>
-                      )}
-                    </div>
-                  )}
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold mb-1">{item.title}</h3>
 
-                  {/* Price */}
-                  <p className="text-sm font-semibold text-white-400 mb-2">
-                    {item.price}
+                {item.description && (
+                  <p className="text-xs text-white/70 mb-2 line-clamp-6">
+                    {item.description}
                   </p>
+                )}
 
-                  {/* Quantity Controls */}
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => {
-                        console.log('Decreasing:', cartKey);
-                        decreaseQty(cartKey);
-                      }}
-                      className="px-2 py-1 border border-red-400 text-white-400 rounded hover:bg-red-200 hover:text-black text-xs"
-                    >
-                      <Minus size={12} />
-                    </button>
-                    <span className="text-sm min-w-[20px] text-center">{item.quantity}</span>
-                    <button
-                      onClick={() => {
-                        console.log('Increasing:', cartKey);
-                        increaseQty(cartKey);
-                      }}
-                      className="px-2 py-1 border border-red-400 text-white-400 rounded hover:bg-red-200 hover:text-black text-xs"
-                    >
-                      <Plus size={12} />
-                    </button>
+                {(item.selectedColor || item.selectedSize || item.shirtQuality) && (
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {item.selectedColor && (
+                      <span className="text-xs bg-gray-800 px-2 py-1 rounded">
+                        Color: {item.selectedColor}
+                      </span>
+                    )}
+                    {item.selectedSize && (
+                      <span className="text-xs bg-gray-800 px-2 py-1 rounded">
+                        Size: {item.selectedSize}
+                      </span>
+                    )}
+                    {item.shirtQuality && (
+                      <span className="text-xs bg-gray-800 px-2 py-1 rounded">
+                        Quality: {item.shirtQuality}
+                      </span>
+                    )}
                   </div>
+                )}
 
-                  {/* Subtotal */}
-                  <p className="text-xs text-gray-300 mt-2">
-                    Subtotal: ₦{(cleanPrice(item.price) * item.quantity).toLocaleString()}
-                  </p>
+                <p className="text-sm font-semibold text-white/80 mb-2">
+                  {item.price}
+                </p>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => decreaseQty(item.cartKey!)}
+                    className="px-2 py-1 border border-red-400 text-white rounded hover:bg-red-400 hover:text-black text-xs"
+                  >
+                    <Minus size={12} />
+                  </button>
+                  <span className="text-sm min-w-[20px] text-center">{item.quantity}</span>
+                  <button
+                    onClick={() => increaseQty(item.cartKey!)}
+                    className="px-2 py-1 border border-red-400 text-white rounded hover:bg-red-400 hover:text-black text-xs"
+                  >
+                    <Plus size={12} />
+                  </button>
                 </div>
 
-                {/* Remove Button */}
-                <button
-                  onClick={() => {
-                    console.log('Removing:', cartKey);
-                    removeFromCart(cartKey);
-                  }}
-                  className="text-red-500 font-bold hover:text-red-400 ml-2"
-                >
-                  ×
-                </button>
+                <p className="text-xs text-white/60 mt-2">
+                  Subtotal: ₦{(cleanPrice(item.price) * item.quantity).toLocaleString()}
+                </p>
               </div>
-            );
-          })}
+
+              <button
+                onClick={() => removeFromCart(item.cartKey!)}
+                className="text-red-500 font-bold hover:text-red-400 ml-2"
+              >
+                ×
+              </button>
+            </div>
+          ))}
         </div>
       )}
 
-      {/* Footer */}
       {cartItems.length > 0 && (
         <div className="mt-6 border-t border-gray-700 pt-4">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm">Items: {cartItems.reduce((sum, item) => sum + item.quantity, 0)}</span>
+            <span className="text-sm">
+              Items: {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+            </span>
             <span className="font-semibold text-red-400">
               Total: ₦{totalAmount.toLocaleString()}
             </span>

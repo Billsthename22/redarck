@@ -1,38 +1,27 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import { ShoppingCart, User, Menu, X } from 'lucide-react'
-import { useCart } from '@/app/Context/cartcontext'
+import { useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { ShoppingCart, Menu, X } from 'lucide-react';
+import { useCart } from '@/app/Context/cartcontext';
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [isAdmin, setIsAdmin] = useState(false)
-  const { totalQuantity, toggleCart } = useCart()
-
-  useEffect(() => {
-    const adminStatus = localStorage.getItem('isAdmin')
-    setIsAdmin(adminStatus === 'true')
-  }, [])
+  const [isOpen, setIsOpen] = useState(false);
+  const { totalQuantity, toggleCart } = useCart();
 
   return (
     <nav className="w-full bg-black text-white border-b border-gray-800 px-6 py-4">
-      {/* Top Nav Bar */}
-      <div className="flex justify-between items-center">
-        {/* Left Links */}
-        <div className="hidden md:flex items-center space-x-6">
-          <Link href="/" className="font-semibold uppercase tracking-wide hover:text-red-500 transition">Home</Link>
-          <Link href="/shop" className="font-semibold uppercase tracking-wide hover:text-red-500 transition">Shop</Link>
-          <Link href="/#about" className="font-semibold uppercase tracking-wide hover:text-red-500 transition">About</Link>
-
-
-          <Link href="/Art" className="font-semibold uppercase tracking-wide hover:text-red-500 transition">Art</Link>
-          <Link href="/contact" className="font-semibold uppercase tracking-wide hover:text-red-500 transition">Contact</Link>
+      <div className="hidden md:grid grid-cols-3 items-center">
+        {/* Left Nav Items */}
+        <div className="flex justify-evenly items-center">
+          <Link href="/" className="font-semibold uppercase hover:text-red-500">Home</Link>
+          <Link href="/shop" className="font-semibold uppercase hover:text-red-500">Shop</Link>
+          <Link href="/#about" className="font-semibold uppercase hover:text-red-500">About</Link>
         </div>
 
-        {/* Logo */}
-        <div className="flex justify-center items-center">
+        {/* Center Logo */}
+        <div className="flex justify-center">
           <Link href="/">
             <Image
               src="/redack nation 1.png"
@@ -45,13 +34,10 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Right Icons */}
-        <div className="hidden md:flex items-center space-x-6">
-          {isAdmin && (
-            <Link href="/signup" className="hover:text-red-500 transition">
-              <User className="w-6 h-6" />
-            </Link>
-          )}
+        {/* Right Nav Items */}
+        <div className="flex justify-evenly items-center">
+          <Link href="/Art" className="font-semibold uppercase hover:text-red-500">Art</Link>
+          <Link href="/contact" className="font-semibold uppercase hover:text-red-500">Contact</Link>
           <button onClick={toggleCart} className="relative hover:text-red-500 transition">
             <ShoppingCart className="w-6 h-6" />
             {totalQuantity > 0 && (
@@ -61,10 +47,25 @@ export default function Navbar() {
             )}
           </button>
         </div>
+      </div>
 
-        {/* Mobile Menu Toggle */}
+      {/* Mobile Header */}
+      <div className="md:hidden flex justify-between items-center">
+        {/* Mobile Logo */}
+        <Link href="/">
+          <Image
+            src="/redack nation 1.png"
+            alt="Redack Nation Logo"
+            width={40}
+            height={40}
+            className="object-contain"
+            priority
+          />
+        </Link>
+
+        {/* Mobile Menu Icon */}
         <button
-          className="md:hidden text-white"
+          className="text-white"
           onClick={() => setIsOpen(!isOpen)}
           aria-label="Toggle Menu"
         >
@@ -75,21 +76,46 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden mt-4 flex flex-col items-center space-y-4 text-center">
-          <Link href="/" className="hover:text-red-500 transition">Home</Link>
-          <Link href="/shop" className="hover:text-red-500 transition">Shop</Link>
-          <Link href="/about" className="hover:text-red-500 transition">About</Link>
-          <Link href="/Art" className="hover:text-red-500 transition">Art</Link>
-          <Link href="/contact" className="hover:text-red-500 transition">Contact</Link>
+          <Link
+            href="/"
+            className="hover:text-red-500 transition"
+            onClick={() => setIsOpen(false)}
+          >
+            Home
+          </Link>
+          <Link
+            href="/shop"
+            className="hover:text-red-500 transition"
+            onClick={() => setIsOpen(false)}
+          >
+            Shop
+          </Link>
+          <Link
+            href="/#about"
+            className="hover:text-red-500 transition"
+            onClick={() => setIsOpen(false)}
+          >
+            About
+          </Link>
+          <Link
+            href="/Art"
+            className="hover:text-red-500 transition"
+            onClick={() => setIsOpen(false)}
+          >
+            Art
+          </Link>
+          <Link
+            href="/contact"
+            className="hover:text-red-500 transition"
+            onClick={() => setIsOpen(false)}
+          >
+            Contact
+          </Link>
 
-          {isAdmin && (
-            <Link href="/signup" className="hover:text-red-500 transition flex items-center gap-2">
-              <User className="w-5 h-5" /> Account
-            </Link>
-          )}
           <button
             onClick={() => {
-              toggleCart()
-              setIsOpen(false)
+              toggleCart();
+              setIsOpen(false);
             }}
             className="hover:text-red-500 transition flex items-center gap-2"
           >
@@ -104,5 +130,5 @@ export default function Navbar() {
         </div>
       )}
     </nav>
-  )
+  );
 }

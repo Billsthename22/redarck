@@ -47,7 +47,7 @@ export default function CustomOrderPage() {
 🔹 Email: ${email}
 🔹 Phone Number: ${phone}`;
 
-    const phoneNumber = '2349155581053';
+    const phoneNumber = '2347072109057';
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURI(message)}`;
 
     window.open(whatsappUrl, '_blank');

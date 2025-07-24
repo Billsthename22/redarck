@@ -189,7 +189,7 @@ export default function Home() {
             className="relative w-full h-[250px] rounded-[20px] overflow-hidden block group"
           >
             <Image
-              src="/customorder.png"
+              src="/customorder .png"
               alt="Custom Order"
               fill
               className="object-cover group-hover:scale-105 transition"
@@ -218,71 +218,79 @@ export default function Home() {
       <Outpost />
       <BannerVerse />
 
-      {/* Chat Section */}
-      <section className="text-center py-10 px-6">
-        <h2 className="text-2xl font-bold mb-4">LETS CHAT</h2>
-        <p className="max-w-xl mx-auto text-gray-400 mb-6">
-          JOIN THE MISSION. COMMIT TO SHINING. BE REMINDED YOU&apos;RE CALLED TO LIGHT UP
-          EVERY SPACE YOU STEP INTO. LET THIS BE A SYMBOL THAT YOU AREN&apos;T WALKING ALONE
-          BUT WITH THE ONE WHO GOES AHEAD OF YOU.
-        </p>
-        <div className="flex justify-center space-x-4">
-          <button className="bg-white text-black px-4 py-2 rounded">Instagram</button>
-          <button className="bg-white text-black px-4 py-2 rounded">WhatsApp</button>
-          <button className="bg-white text-black px-4 py-2 rounded">Email</button>
-        </div>
-      </section>
-
       {/* Our Why Section */}
       <section
-        id="about"
-        className="mt-8 bg-[#9C1A1A] text-white flex flex-col md:flex-row items-center justify-center max-w-[1300px] h-[639px] mx-auto rounded-[30px] overflow-hidden px-8 py-8 gap-6"
-      >
-        {/* Left Side */}
-        <div className="flex-1 flex flex-col justify-center h-full relative text-left">
-          {/* Slanted Label */}
-          <div className="absolute top-4 left-0 rotate-[-10deg] bg-[#2B64F6] px-6 py-2 rounded-[10px] text-[40px] font-[koulen] text-white leading-none shadow-lg">
-            OUR <span className="text-[#FAF8F7]">why</span>
-          </div>
+  id="about"
+  className="mt-8 max-w-[1300px] mx-auto rounded-[30px] overflow-hidden px-4 py-8 md:px-8 md:py-8"
+>
+  {/* Mobile View: Responsive Video (Clickable to Unmute & Expand) */}
+  <div className="md:hidden w-full flex justify-center items-center">
+    <video
+      src="/ovieabout.mp4"
+      loop
+      playsInline
+      controls
+      muted
+      className="rounded-[27px] w-[491.2px] h-[580px] object-cover bg-black"
+    />
+  </div>
 
-          {/* First Paragraph */}
-          <p className="mt-16 text-[16px] md:text-[18px] font-bold leading-[160%] uppercase">
-            REDACK NATION IS A CHRISTIAN FASHION BRAND FOUNDED BY OVIE AKPOBORIE, A DEDICATED
-            CHRISTIAN AND CREATIVE DIRECTOR WITH A PASSION FOR BOTH FAITH AND FASHION. WE
-            BELIEVE THAT WHAT YOU WEAR CAN BE A POWERFUL FORM OF SELF-EXPRESSION, ESPECIALLY
-            WHEN IT COMES TO SHOWCASING YOUR CHRISTIAN MORALS AND BELIEFS. OUR BRAND STANDS
-            OUT THROUGH ITS UNIQUE DESIGNS AND COMMITMENT TO USING HIGH-QUALITY FABRICS AND
-            TEXTURES, ENSURING THAT EVERY PIECE NOT ONLY LOOKS GREAT BUT FEELS GREAT TOO.
-          </p>
+  {/* Desktop View: Red Background + Content */}
+  <div className="hidden md:flex flex-row items-center justify-center gap-6 h-full bg-[#9C1A1A] text-white rounded-[30px] p-8">
+    {/* Left Side Text */}
+    <div className="flex-1 flex flex-col justify-center h-full relative text-left">
+      {/* Slanted Label */}
+      <div className="absolute top-4 left-0 rotate-[-10deg] bg-[#2B64F6] px-6 py-2 rounded-[10px] text-[40px] font-[koulen] text-white leading-none shadow-lg">
+        OUR <span className="text-[#FAF8F7]">why</span>
+      </div>
 
-          {/* Second Paragraph */}
-          <p className="mt-8 text-[16px] md:text-[18px] font-bold leading-[160%] uppercase">
-            OVIE&apos;S VISION FOR REDACK NATION GOES BEYOND JUST CLOTHING; IT&apos;S ABOUT BUILDING A
-            GOD-LOVING COMMUNITY. WE AIM TO CREATE A SPACE WHERE CHRISTIANS FEEL EMPOWERED
-            AND FREE TO EXPRESS THEIR UNWAVERING PASSION FOR CHRIST THROUGH THEIR PERSONAL
-            STYLE. EACH GARMENT IS DESIGNED TO INSPIRE AND UPLIFT, ALLOWING YOU TO WEAR YOUR
-            FAITH PROUDLY AND STYLISHLY. JOIN US IN CELEBRATING A VIBRANT AND AUTHENTIC
-            EXPRESSION OF CHRISTIANITY THROUGH FASHION.
-          </p>
-        </div>
+      {/* First Paragraph */}
+      <p className="mt-16 text-[16px] md:text-[18px] font-bold leading-[160%] uppercase">
+        REDACK NATION IS A CHRISTIAN FASHION BRAND FOUNDED BY OVIE AKPOBORIE, A DEDICATED
+        CHRISTIAN AND CREATIVE DIRECTOR WITH A PASSION FOR BOTH FAITH AND FASHION. WE
+        BELIEVE THAT WHAT YOU WEAR CAN BE A POWERFUL FORM OF SELF-EXPRESSION, ESPECIALLY
+        WHEN IT COMES TO SHOWCASING YOUR CHRISTIAN MORALS AND BELIEFS. OUR BRAND STANDS
+        OUT THROUGH ITS UNIQUE DESIGNS AND COMMITMENT TO USING HIGH-QUALITY FABRICS AND
+        TEXTURES, ENSURING THAT EVERY PIECE NOT ONLY LOOKS GREAT BUT FEELS GREAT TOO.
+      </p>
 
-        {/* Right Side Image */}
-        <div
-          className="flex justify-center items-center relative"
-          style={{
-            width: '491.2px',
-            height: '580px',
-            borderRadius: '27px',
-            backgroundColor: '#9C1A1A',
-            overflow: 'hidden'
-          }}
-        >
-          <Image src="/isaac.png" alt="Ovie" fill className="object-cover" />
-          <div className="absolute bottom-4 right-4 text-white text-[48px] font-[Leckerli_One]">
-            Ovie
-          </div>
-        </div>
-      </section>
+      {/* Second Paragraph */}
+      <p className="mt-8 text-[16px] md:text-[18px] font-bold leading-[160%] uppercase">
+        OVIE&apos;S VISION FOR REDACK NATION GOES BEYOND JUST CLOTHING; IT&apos;S ABOUT BUILDING A
+        GOD-LOVING COMMUNITY. WE AIM TO CREATE A SPACE WHERE CHRISTIANS FEEL EMPOWERED
+        AND FREE TO EXPRESS THEIR UNWAVERING PASSION FOR CHRIST THROUGH THEIR PERSONAL
+        STYLE. EACH GARMENT IS DESIGNED TO INSPIRE AND UPLIFT, ALLOWING YOU TO WEAR YOUR
+        FAITH PROUDLY AND STYLISHLY. JOIN US IN CELEBRATING A VIBRANT AND AUTHENTIC
+        EXPRESSION OF CHRISTIANITY THROUGH FASHION.
+      </p>
+    </div>
+
+    {/* Right Side: Desktop Video Styled Like Image */}
+    <div
+      className="flex justify-center items-center relative"
+      style={{
+        width: '491.2px',
+        height: '580px',
+        borderRadius: '27px',
+        backgroundColor: '#000',
+        overflow: 'hidden',
+      }}
+    >
+      <video
+        src="/ovieabout.mp4"
+        loop
+        muted
+        playsInline
+        controls
+        className="w-full h-full object-cover rounded-[27px]"
+      />
+      <div className="absolute bottom-4 right-4 text-white text-[48px] font-[Leckerli_One] pointer-events-none">
+        Ovie
+      </div>
+    </div>
+  </div>
+</section>
+
 
       {/* Let's Chat Section */}
       <section className="text-center py-8 px-4 sm:px-6">
@@ -308,7 +316,7 @@ export default function Home() {
             Instagram
           </a>
           <a
-            href="https://wa.me/2349155581053"
+            href="https://wa.me/2347072109057"
             target="_blank"
             rel="noopener noreferrer"
             className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded transition font-[koulen] text-[12px] sm:text-[16px]"
