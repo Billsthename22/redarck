@@ -1,92 +1,99 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextRequest, NextResponse } from 'next/server';
-import { connectDB }            from '@/app/api/lib/mongodb';
-import Product                  from '@/app/api/model/Product';
-import { ObjectId }             from 'mongodb';
+import { NextRequest, NextResponse } from "next/server";
+import { connectDB } from "@/app/api/lib/mongodb";
+import Product from "@/app/api/model/Product";
+import { ObjectId } from "mongodb";
 
 // GET product by ID
 export async function GET(
   req: NextRequest,
-  { params }: any  // ← no explicit { id: string } annotation
+  { params }: any // ← no explicit { id: string } annotation
 ) {
   try {
     await connectDB();
-    const { id }= await params;
+    const { id } = await params;
 
     if (!ObjectId.isValid(id)) {
-      return NextResponse.json({ error: 'Invalid product ID' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid product ID" },
+        { status: 400 }
+      );
     }
 
     const product = await Product.findById(id);
     if (!product) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
     return NextResponse.json(product);
   } catch (err) {
-    console.error('Product fetch error:', err);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    console.error("Product fetch error:", err);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
 
 // DELETE product by ID
-export async function DELETE(
-  req: NextRequest,
-  { params }: any
-) {
+export async function DELETE(req: NextRequest, { params }: any) {
   try {
     await connectDB();
     const id = params.id;
 
     if (!ObjectId.isValid(id)) {
-      return NextResponse.json({ error: 'Invalid product ID' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid product ID" },
+        { status: 400 }
+      );
     }
 
     const deleted = await Product.findByIdAndDelete(id);
     if (!deleted) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ message: 'Product deleted successfully' });
+    return NextResponse.json({ message: "Product deleted successfully" });
   } catch (err) {
-    console.error('Product delete error:', err);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    console.error("Product delete error:", err);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
 
 // PUT product update by ID
 export async function PUT(
   req: NextRequest,
-  { params }: any
+  context: { params: { id: string } }
 ) {
   try {
     await connectDB();
-    const id = params.id;
-
+    const id = context.params.id;
+    console.log(id);
     if (!ObjectId.isValid(id)) {
-      return NextResponse.json({ error: 'Invalid product ID' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid product ID" },
+        { status: 400 }
+      );
     }
 
-    const formData = await req.formData();
-    const title       = formData.get('title') as string;
-    const price       = formData.get('price') as string;
-    // …other fields…
+    const body = await req.json();
+    const { title, price, description, colors, sizes } = body;
 
     if (!title || !price) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
     }
+    
 
-    const payload: any = { title, price /* … */ };
-    // handle image, arrays, etc.
-
+    const payload: any = { title, price, description, colors, sizes };
+    console.log(payload);
     const updated = await Product.findByIdAndUpdate(id, payload, { new: true });
     if (!updated) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+      return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
     return NextResponse.json(updated);
   } catch (err) {
-    console.error('Product update error:', err);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    console.error("Product update error:", err);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
