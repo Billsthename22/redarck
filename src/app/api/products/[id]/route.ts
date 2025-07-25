@@ -60,12 +60,14 @@ export async function DELETE(req: NextRequest, { params }: any) {
 // PUT product update by ID
 export async function PUT(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
     await connectDB();
-    const id = context.params.id;
-    console.log(id);
+
+    const id = params.id;
+    console.log("Product ID:", id);
+
     if (!ObjectId.isValid(id)) {
       return NextResponse.json(
         { error: "Invalid product ID" },
@@ -82,11 +84,11 @@ export async function PUT(
         { status: 400 }
       );
     }
-    
 
-    const payload: any = { title, price, description, colors, sizes };
-    console.log(payload);
+    const payload = { title, price, description, colors, sizes };
+
     const updated = await Product.findByIdAndUpdate(id, payload, { new: true });
+
     if (!updated) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
