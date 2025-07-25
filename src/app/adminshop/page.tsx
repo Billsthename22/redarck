@@ -260,11 +260,14 @@ export default function AdminShopPage() {
                   />
                 </label>
                 {previewImage && (
-                  <Image
-                    src={previewImage}
-                    alt="Preview"
-                    className="mt-2 w-full h-48 object-cover rounded"
-                  />
+               <Image
+               src={previewImage}
+               alt="Preview"
+               width={400}
+               height={192} // height for 48 * 4 (Tailwind h-48 = 12rem = 192px)
+               className="mt-2 w-full h-48 object-cover rounded"
+             />
+             
                 )}
               </div>
 
@@ -293,12 +296,15 @@ export default function AdminShopPage() {
                 {colorPreviews.length > 0 && (
                   <div className="flex gap-2 mt-4 overflow-x-auto">
                     {colorPreviews.map((src, i) => (
-                      <Image
-                        key={i}
-                        src={src}
-                        alt={`color-${i}`}
-                        className="w-16 h-16 object-cover rounded border border-gray-600"
-                      />
+               <Image
+               key={i}
+               src={src}
+               alt={`color-${i}`}
+               width={64}
+               height={64}
+               className="w-16 h-16 object-cover rounded border border-gray-600"
+             />
+             
                     ))}
                   </div>
                 )}

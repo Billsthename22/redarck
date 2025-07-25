@@ -46,7 +46,8 @@ export default function ShopPage() {
   };
 
   return (
-    <main className="bg-black text-white min-h-screen flex flex-col justify-between">
+    <main className="bg-black text-white min-h-screen flex flex-col justify-between pt-20">
+
       <Navbar />
 
       {/* Search */}

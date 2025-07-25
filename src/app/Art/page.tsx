@@ -16,7 +16,6 @@ export default function ArtPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [allArtworks, setAllArtworks] = useState<Art[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-
   const itemsPerPage = 9;
 
   useEffect(() => {
@@ -34,7 +33,6 @@ export default function ArtPage() {
     }
   };
 
-  // Filter and paginate
   const filteredArtworks = allArtworks.filter(art =>
     art.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -53,26 +51,33 @@ export default function ArtPage() {
   };
 
   return (
-    <main className="bg-black text-white min-h-screen flex flex-col justify-between">
+
+    <main className="bg-black text-white min-h-screen flex flex-col justify-between pt-20">
       <Navbar />
+        {/* Heading */}
+        <h1 className="text-center text-3xl md:text-4xl font-semibold mb-8 tracking-wide">
+          Explore Our Art Collection
+        </h1>
 
-      {/* Search Bar */}
-      <div className="flex justify-center mt-8 mb-4">
-        <div className="relative w-full max-w-md">
-          <input
-            type="text"
-            placeholder="Looking for"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            className="w-full px-10 py-3 rounded-full bg-zinc-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
-          />
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+        {/* Search Bar */}
+        <div className="flex justify-center mb-10">
+          <div className="relative w-full max-w-md">
+            <input
+              type="text"
+              placeholder="Search for art..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className="w-full px-12 py-3 rounded-full bg-zinc-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all duration-200"
+            />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+          </div>
         </div>
-      </div>
 
-      {/* Products Section */}
-      <section className="max-w-screen-xl mx-auto px-4 pt-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        {/* Products */}
+        <section className="max-w-screen-xl mx-auto px-4 pt-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 md:gap-8">
+
+
           {paginatedArtworks.length > 0 ? (
             paginatedArtworks.map(art => (
               <ProductCard
@@ -81,36 +86,47 @@ export default function ArtPage() {
                 imageSrc={art.imageSrc}
                 title={art.title}
                 price={art.price}
-                 route="Art"  // ✅ Change from "admindetail" to "Art" for public art page
-                 type="art"
+                route="Art"
+                type="art"
               />
             ))
           ) : (
             <p className="col-span-full text-center text-gray-400">No artworks found.</p>
           )}
-        </div>
-      </section>
+            </div>
+        </section>
 
-      {/* Pagination */}
-      <div className="flex justify-center items-center gap-2 py-10">
+        {/* Pagination */}
+        <div className="flex justify-center items-center gap-2 py-10">
         <button
           onClick={goToPrevious}
           disabled={currentPage === 1}
-          className={`w-6 h-6 rounded-sm text-sm ${currentPage === 1 ? 'bg-gray-500 text-white cursor-not-allowed' : 'bg-white text-black'}`}
+          className={`w-8 h-8 rounded-sm text-sm font-semibold ${
+            currentPage === 1
+              ? 'bg-gray-600 text-white cursor-not-allowed'
+              : 'bg-white text-black hover:bg-red-500 hover:text-white'
+          }`}
         >
           &lt;
         </button>
-        <button className="w-6 h-6 rounded-sm text-sm bg-red-700 text-white">
+
+        <span className="w-8 h-8 flex items-center justify-center rounded-sm text-sm font-bold bg-red-700 text-white">
           {currentPage}
-        </button>
+        </span>
+
         <button
           onClick={goToNext}
           disabled={currentPage === totalPages}
-          className={`w-6 h-6 rounded-sm text-sm ${currentPage === totalPages ? 'bg-gray-500 text-white cursor-not-allowed' : 'bg-white text-black'}`}
+          className={`w-8 h-8 rounded-sm text-sm font-semibold ${
+            currentPage === totalPages
+              ? 'bg-gray-600 text-white cursor-not-allowed'
+              : 'bg-white text-black hover:bg-red-500 hover:text-white'
+          }`}
         >
           &gt;
         </button>
       </div>
-    </main>
+      </main>
+
   );
 }
