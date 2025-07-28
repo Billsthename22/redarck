@@ -6,7 +6,11 @@ import Image from 'next/image';
 import { ShoppingCart, Menu, X } from 'lucide-react';
 import { useCart } from '@/app/Context/cartcontext';
 
-export default function Navbar() {
+interface NavbarProps {
+  isFixed?: boolean;
+}
+
+export default function Navbar({ isFixed = true }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { totalQuantity, toggleCart } = useCart();
 

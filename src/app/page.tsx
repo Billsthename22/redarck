@@ -22,7 +22,7 @@ export default function Home() {
   {/* Desktop Video Section */}
   <div className="relative w-full max-w-[1296px] mx-auto aspect-[1296/702] overflow-hidden shadow-lg rounded-[36px] sm:block hidden">
     <video
-      src="/bg.mp4"
+      src="/bg_3.mp4"
       className="w-full h-full object-cover"
       autoPlay
       muted
@@ -48,7 +48,7 @@ export default function Home() {
 {/* Mobile Video Section */}
 <div className="relative w-full block sm:hidden rounded-[24px] overflow-hidden">
   <video
-    src="/mobile redacknation bg.mov"
+    src="/mobile redacknation bg_1.mp4"
     className="w-full h-auto object-cover"
     autoPlay
     muted
