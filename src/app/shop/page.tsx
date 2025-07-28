@@ -81,7 +81,7 @@ export default function ShopPage() {
               />
             ))
           ) : (
-            <p className="col-span-full text-center text-gray-400">No products found.</p>
+            <p className="col-span-full text-center text-gray-400">Light turning on</p>
           )}
         </div>
       </section>
