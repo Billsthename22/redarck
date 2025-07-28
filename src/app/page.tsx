@@ -1,4 +1,5 @@
 'use client';
+
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -15,26 +16,38 @@ export default function Home() {
   const [mobileInView, setMobileInView] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            if (entry.target === desktopRef.current) setDesktopInView(true);
-            if (entry.target === mobileRef.current) setMobileInView(true);
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
+    const observerOptions = {
+      root: null,
+      threshold: 0.3,
+    };
 
-    if (desktopRef.current) observer.observe(desktopRef.current);
-    if (mobileRef.current) observer.observe(mobileRef.current);
+    const desktopObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setDesktopInView(true);
+          desktopObserver.disconnect();
+        }
+      });
+    }, observerOptions);
+
+    const mobileObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setMobileInView(true);
+          mobileObserver.disconnect();
+        }
+      });
+    }, observerOptions);
+
+    if (desktopRef.current) desktopObserver.observe(desktopRef.current);
+    if (mobileRef.current) mobileObserver.observe(mobileRef.current);
 
     return () => {
-      if (desktopRef.current) observer.unobserve(desktopRef.current);
-      if (mobileRef.current) observer.unobserve(mobileRef.current);
+      desktopObserver.disconnect();
+      mobileObserver.disconnect();
     };
   }, []);
+
 
   return (
     <main className="min-h-screen bg-black text-white font-sans overflow-x-hidden">
