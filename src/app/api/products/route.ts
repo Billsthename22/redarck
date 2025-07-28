@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/app/api/lib/mongodb';
 import Product from '@/app/api/model/Product';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
 import cloudinary from '../lib/cloudinary';
 
 export const runtime = 'nodejs'; // ensure Node runtime, not Edge
@@ -29,7 +27,7 @@ export async function POST(req: NextRequest) {
 
     // Upload main image to Cloudinary
     const imageBuffer = Buffer.from(await imageFile.arrayBuffer());
-    const mainUpload = await cloudinary.uploader.upload_stream({ folder: 'products' }, (error, result) => {
+    await cloudinary.uploader.upload_stream({ folder: 'products' }, (error, result) => {
       if (error || !result) throw new Error('Cloudinary upload failed');
     });
 
@@ -79,13 +77,15 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(product, { status: 201 });
-  } catch (err: any) {
-    console.error('❌ Upload failed:', err);
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error('Unknown error');
+    console.error('❌ Upload failed:', error);
     return NextResponse.json({
       error: 'Upload failed',
-      message: err.message,
+      message: error.message,
     }, { status: 500 });
   }
+  
 }
 
 // GET: Fetch all products

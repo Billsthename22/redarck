@@ -1,13 +1,19 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/app/api/lib/mongodb";
-import Product from "@/app/api/model/Product";
-import { ObjectId } from "mongodb";
+import { NextRequest, NextResponse } from 'next/server';
+
+import { connectDB } from '@/app/api/lib/mongodb';
+import Product from '@/app/api/model/Product';
+import { ObjectId } from 'mongodb';
+interface Params {
+  params: {
+    id: string;
+  };
+}
+
 
 // GET product by ID
 export async function GET(
   req: NextRequest,
-  { params }: any // ← no explicit { id: string } annotation
+  { params }: any 
 ) {
   try {
     await connectDB();
@@ -58,19 +64,15 @@ export async function DELETE(req: NextRequest, { params }: any) {
 }
 
 // PUT product update by ID
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest, { params }: Params) {
   try {
     await connectDB();
 
     const id = params.id;
-    console.log("Product ID:", id);
 
     if (!ObjectId.isValid(id)) {
       return NextResponse.json(
-        { error: "Invalid product ID" },
+        { error: 'Invalid product ID' },
         { status: 400 }
       );
     }
@@ -80,22 +82,25 @@ export async function PUT(
 
     if (!title || !price) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: 'Missing required fields' },
         { status: 400 }
       );
     }
 
     const payload = { title, price, description, colors, sizes };
 
-    const updated = await Product.findByIdAndUpdate(id, payload, { new: true });
+    const updated = await Product.findByIdAndUpdate(id, payload, {
+      new: true,
+    });
 
     if (!updated) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
 
     return NextResponse.json(updated);
-  } catch (err) {
-    console.error("Product update error:", err);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error('Unknown error');
+    console.error('Product update error:', error);
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
