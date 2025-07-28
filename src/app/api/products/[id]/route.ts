@@ -1,23 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
-
 import { connectDB } from '@/app/api/lib/mongodb';
 import Product from '@/app/api/model/Product';
 import { ObjectId } from 'mongodb';
+
 interface Params {
   params: {
     id: string;
   };
 }
 
-
 // GET product by ID
 export async function GET(
   req: NextRequest,
-  { params }: any 
+  { params }: Params
 ) {
   try {
     await connectDB();
-    const { id } = await params;
+    const { id } = params;
 
     if (!ObjectId.isValid(id)) {
       return NextResponse.json(
@@ -32,17 +31,21 @@ export async function GET(
     }
 
     return NextResponse.json(product);
-  } catch (err) {
-    console.error("Product fetch error:", err);
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error('Unknown error');
+    console.error("Product fetch error:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
 
 // DELETE product by ID
-export async function DELETE(req: NextRequest, { params }: any) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: Params
+) {
   try {
     await connectDB();
-    const id = params.id;
+    const { id } = params;
 
     if (!ObjectId.isValid(id)) {
       return NextResponse.json(
@@ -57,18 +60,21 @@ export async function DELETE(req: NextRequest, { params }: any) {
     }
 
     return NextResponse.json({ message: "Product deleted successfully" });
-  } catch (err) {
-    console.error("Product delete error:", err);
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error('Unknown error');
+    console.error("Product delete error:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
 
 // PUT product update by ID
-export async function PUT(req: NextRequest, { params }: Params) {
+export async function PUT(
+  req: NextRequest,
+  { params }: Params
+) {
   try {
     await connectDB();
-
-    const id = params.id;
+    const { id } = params;
 
     if (!ObjectId.isValid(id)) {
       return NextResponse.json(

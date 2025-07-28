@@ -6,19 +6,15 @@ import Image from 'next/image';
 import { ShoppingCart, Menu, X } from 'lucide-react';
 import { useCart } from '@/app/Context/cartcontext';
 
-interface NavbarProps {
-  isFixed?: boolean;
-}
-
-export default function Navbar({ isFixed = true }: NavbarProps) {
+export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { totalQuantity, toggleCart } = useCart();
 
   return (
-   <nav className="fixed top-0 left-0 z-50 w-full bg-black text-white border-b border-gray-800 px-6 py-4">
-
+    <nav className="fixed top-0 left-0 z-50 w-full bg-black text-white border-b border-gray-800 px-6 py-4">
+      {/* Desktop Navigation */}
       <div className="hidden md:grid grid-cols-3 items-center">
-        {/* Left Nav Items */}
+        {/* Left Nav */}
         <div className="flex justify-evenly items-center">
           <Link href="/" className="font-semibold uppercase hover:text-red-500">Home</Link>
           <Link href="/shop" className="font-semibold uppercase hover:text-red-500">Shop</Link>
@@ -39,7 +35,7 @@ export default function Navbar({ isFixed = true }: NavbarProps) {
           </Link>
         </div>
 
-        {/* Right Nav Items */}
+        {/* Right Nav */}
         <div className="flex justify-evenly items-center">
           <Link href="/Art" className="font-semibold uppercase hover:text-red-500">Art</Link>
           <Link href="/contact" className="font-semibold uppercase hover:text-red-500">Contact</Link>
@@ -54,9 +50,8 @@ export default function Navbar({ isFixed = true }: NavbarProps) {
         </div>
       </div>
 
-      {/* Mobile Header */}
+      {/* Mobile Navigation */}
       <div className="md:hidden flex justify-between items-center">
-        {/* Mobile Logo */}
         <Link href="/">
           <Image
             src="/redack nation 1.png"
@@ -67,8 +62,6 @@ export default function Navbar({ isFixed = true }: NavbarProps) {
             priority
           />
         </Link>
-
-        {/* Mobile Menu Icon */}
         <button
           className="text-white"
           onClick={() => setIsOpen(!isOpen)}
@@ -78,44 +71,18 @@ export default function Navbar({ isFixed = true }: NavbarProps) {
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden mt-4 flex flex-col items-center space-y-4 text-center">
-          <Link
-            href="/"
-            className="hover:text-red-500 transition"
-            onClick={() => setIsOpen(false)}
-          >
-            Home
-          </Link>
-          <Link
-            href="/shop"
-            className="hover:text-red-500 transition"
-            onClick={() => setIsOpen(false)}
-          >
-            Shop
-          </Link>
-          <Link
-            href="/#about"
-            className="hover:text-red-500 transition"
-            onClick={() => setIsOpen(false)}
-          >
-            About
-          </Link>
-          <Link
-            href="/Art"
-            className="hover:text-red-500 transition"
-            onClick={() => setIsOpen(false)}
-          >
-            Art
-          </Link>
-          <Link
-            href="/contact"
-            className="hover:text-red-500 transition"
-            onClick={() => setIsOpen(false)}
-          >
-            Contact
-          </Link>
+          {['/', '/shop', '/#about', '/Art', '/contact'].map((href, i) => (
+            <Link
+              key={i}
+              href={href}
+              className="hover:text-red-500 transition"
+              onClick={() => setIsOpen(false)}
+            >
+              {href === '/' ? 'Home' : href.replace('/', '').replace('#', '')}
+            </Link>
+          ))}
 
           <button
             onClick={() => {
