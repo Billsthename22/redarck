@@ -216,7 +216,7 @@ export default function AdminShopPage() {
                 <option value="White">White</option>
                 <option value="Blue">Blue</option>
                 <option value="Green">Green</option>
-                <option value="Green">mustard yellow</option>
+                <option value="mustardyellow">mustard yellow</option>
               </select>
 
               <label className="block mt-4 mb-2">Select Sizes</label>
