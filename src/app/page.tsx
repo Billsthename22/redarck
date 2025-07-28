@@ -1,6 +1,6 @@
 'use client';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-
 import Link from 'next/link';
 import Navbar from './components/Navbar';
 import BannerVerse from './components/BannerVerse';
@@ -8,70 +8,118 @@ import Outpost from './components/Outpost';
 import Footer from './components/Footer';
 import Buffer from './components/buffer';
 
-
 export default function Home() {
+  const desktopRef = useRef<HTMLDivElement>(null);
+  const mobileRef = useRef<HTMLDivElement>(null);
+  const [desktopInView, setDesktopInView] = useState(false);
+  const [mobileInView, setMobileInView] = useState(false);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            if (entry.target === desktopRef.current) setDesktopInView(true);
+            if (entry.target === mobileRef.current) setMobileInView(true);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    if (desktopRef.current) observer.observe(desktopRef.current);
+    if (mobileRef.current) observer.observe(mobileRef.current);
+
+    return () => {
+      if (desktopRef.current) observer.unobserve(desktopRef.current);
+      if (mobileRef.current) observer.unobserve(mobileRef.current);
+    };
+  }, []);
 
   return (
     <main className="min-h-screen bg-black text-white font-sans overflow-x-hidden">
       <Buffer />
       <Navbar />
 
-     {/* ✅ Responsive Hero Section */}
-<section className="relative w-full bg-black px-6 pt-[100px] pb-12">
-  {/* Desktop Video Section */}
-  <div className="relative w-full max-w-[1296px] mx-auto aspect-[1296/702] overflow-hidden shadow-lg rounded-[36px] sm:block hidden">
-    <video
-      src="/bg_3.mp4"
-      className="w-full h-full object-cover"
-      autoPlay
-      muted
-      loop
-      playsInline
-    />
+      {/* ✅ Responsive Hero Section with Lazy Loaded Videos */}
+      <section className="relative w-full bg-black px-6 pt-[100px] pb-12">
 
-    {/* Desktop Content */}
-    <div className="absolute inset-0 flex flex-col items-center justify-start text-center px-4 pt-[100px]">
-      <h1 className="text-5xl font-bold mb-4 leading-tight text-white">
-        LET MY LIGHT SO <span className="font-[Leckerli_One]">shine</span>
-      </h1>
-      <h3 className="text-xl mb-6 text-white">Not your regular fashion brand</h3>
-      <Link href="/shop">
-        <button className="bg-yellow-600 font-[koulen] hover:bg-yellow-700 text-black px-8 py-4 rounded-full text-xl transition duration-300">
-          Shop Now
-        </button>
-      </Link>
-    </div>
-  </div>
+        {/* Desktop Video Section */}
+        <div
+          ref={desktopRef}
+          className="relative w-full max-w-[1296px] mx-auto aspect-[1296/702] overflow-hidden shadow-lg rounded-[36px] sm:block hidden"
+        >
+          {!desktopInView ? (
+            <Image
+              src="/lazyimageweb.jpg"
+              alt="Hero Preview Desktop"
+              fill
+              className="object-cover"
+              priority
+            />
+          ) : (
+            <video
+              src="/bg_3.mp4"
+              className="w-full h-full object-cover"
+              autoPlay
+              muted
+              loop
+              playsInline
+            />
+          )}
 
-  {/* Mobile Video Section */}
-{/* Mobile Video Section */}
-<div className="relative w-full block sm:hidden rounded-[24px] overflow-hidden">
-  <video
-    src="/mobile redacknation bg_1.mp4"
-    className="w-full h-auto object-cover"
-    autoPlay
-    muted
-    loop
-    playsInline
-  />
+          {/* Desktop Content */}
+          <div className="absolute inset-0 flex flex-col items-center justify-start text-center px-4 pt-[100px]">
+            <h1 className="text-5xl font-bold mb-4 leading-tight text-white">
+              LET MY LIGHT SO <span className="font-[Leckerli_One]">shine</span>
+            </h1>
+            <h3 className="text-xl mb-6 text-white">Not your regular fashion brand</h3>
+            <Link href="/shop">
+              <button className="bg-yellow-600 font-[koulen] hover:bg-yellow-700 text-black px-8 py-4 rounded-full text-xl transition duration-300">
+                Shop Now
+              </button>
+            </Link>
+          </div>
+        </div>
 
-  {/* Mobile Content */}
-  <div className="absolute inset-0 flex flex-col items-center justify-start text-center px-4 pt-[140px]">
-    <h1 className="text-[32px] font-bold mb-2 leading-tight text-white">
-      LET MY LIGHT SO <span className="font-[Leckerli_One]">shine</span>
-    </h1>
-    <h3 className="text-[16px] mb-4 text-white">Not your regular fashion brand</h3>
-    <Link href="/shop">
-      <button className="bg-yellow-600 font-[koulen] hover:bg-yellow-700 text-black px-8 py-4 rounded-full text-xl transition duration-300">
-        Shop Now
-      </button>
-    </Link>
-  </div>
-</div>
+        {/* Mobile Video Section */}
+        <div
+          ref={mobileRef}
+          className="relative w-full block sm:hidden rounded-[24px] overflow-hidden aspect-[3/4]"
+        >
+          {!mobileInView ? (
+            <Image
+              src="/lazyimagemobile.jpg"
+              alt="Hero Preview Mobile"
+              fill
+              className="object-cover"
+              priority
+            />
+          ) : (
+            <video
+              src="/mobile redacknation bg_1.mp4"
+              className="w-full h-full object-cover"
+              autoPlay
+              muted
+              loop
+              playsInline
+            />
+          )}
 
-</section>
-
+          {/* Mobile Content */}
+          <div className="absolute inset-0 flex flex-col items-center justify-start text-center px-4 pt-[140px]">
+            <h1 className="text-[32px] font-bold mb-2 leading-tight text-white">
+              LET MY LIGHT SO <span className="font-[Leckerli_One]">shine</span>
+            </h1>
+            <h3 className="text-[16px] mb-4 text-white">Not your regular fashion brand</h3>
+            <Link href="/shop">
+              <button className="bg-yellow-600 font-[koulen] hover:bg-yellow-700 text-black px-8 py-4 rounded-full text-xl transition duration-300">
+                Shop Now
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
       <BannerVerse />
 
       {/* Feature Boxes */}
