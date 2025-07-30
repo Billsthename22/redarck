@@ -51,7 +51,7 @@ export default function ArtPage() {
   //   setSearchQuery(e.target.value);
   //   setCurrentPage(1);
   // };
-  const progress = 65;
+
   return (
     <main className="bg-black text-white min-h-screen flex flex-col justify-center items-center pt-20 px-4">
     <Navbar />
