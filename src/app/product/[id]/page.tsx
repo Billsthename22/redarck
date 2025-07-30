@@ -221,17 +221,20 @@ export default function ProductPage() {
       You May Also Like
     </h2>
 
-    <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-red-500">
-      {relatedProducts.map((item) => (
-        <ProductCard
-          key={item._id}
-          id={item._id}
-          imageSrc={item.imageSrc}
-          title={item.title}
-          price={item.price}
-        />
-      ))}
-    </div>
+    <div className="w-full flex justify-center">
+  <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-red-500">
+    {relatedProducts.map((item) => (
+      <ProductCard
+        key={item._id}
+        id={item._id}
+        imageSrc={item.imageSrc}
+        title={item.title}
+        price={item.price}
+      />
+    ))}
+  </div>
+</div>
+
   </div>
 </section>
 
