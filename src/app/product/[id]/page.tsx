@@ -215,25 +215,26 @@ export default function ProductPage() {
 
         {/* Related Products */}
         {relatedProducts.length > 0 && (
-       <section className="w-full flex justify-center mt-20">
-       <div className="max-w-7xl w-full px-4">
-         <h2 className="text-xl font-bold mb-4 border-b border-zinc-700 pb-2 text-center">
-           You May Also Like
-         </h2>
-         <div className="flex justify-center space-x-4 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-red-500">
-           {relatedProducts.map((item) => (
-             <ProductCard
-               key={item._id}
-               id={item._id}
-               imageSrc={item.imageSrc}
-               title={item.title}
-               price={item.price}
-             />
-           ))}
-         </div>
-       </div>
-     </section>
-     
+  <section className="w-full flex justify-center mt-20">
+  <div className="max-w-7xl w-full px-4">
+    <h2 className="text-[30px] font-[koulen] mb-4 border-b border-zinc-700 pb-2">
+      You May Also Like
+    </h2>
+
+    <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-red-500">
+      {relatedProducts.map((item) => (
+        <ProductCard
+          key={item._id}
+          id={item._id}
+          imageSrc={item.imageSrc}
+          title={item.title}
+          price={item.price}
+        />
+      ))}
+    </div>
+  </div>
+</section>
+
         )}
       </main>
     </>
