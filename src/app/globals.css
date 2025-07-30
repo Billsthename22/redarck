@@ -73,3 +73,18 @@ body {
     }
   }
 }
+@keyframes fillLoop {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 65%;
+  }
+}
+
+.loading-loop-bar {
+  animation: fillLoop 2.5s ease-in-out infinite;
+  background: linear-gradient(to right, #ef4444, #f87171, #ef4444);
+  background-size: 200% 100%;
+  border-radius: 9999px;
+}

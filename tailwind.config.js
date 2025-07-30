@@ -24,9 +24,14 @@ module.exports = {
             opacity: '1',
           },
         },
+        loadingBar: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
       },
       animation: {
         glow: 'glow 1.6s ease-in-out infinite',
+        loadingBar: 'loadingBar 1.5s linear infinite',
       },
     },
   },

@@ -51,18 +51,32 @@ export default function ArtPage() {
   //   setSearchQuery(e.target.value);
   //   setCurrentPage(1);
   // };
-
+  const progress = 65;
   return (
-    <main className="bg-black text-white min-h-screen flex flex-col justify-center items-center text-center pt-20 px-4">
-      <Navbar />
+    <main className="bg-black text-white min-h-screen flex flex-col justify-center items-center pt-20 px-4">
+    <Navbar />
 
-      <div>
-        <div className="text-6xl mb-4">🚧</div>
-        <h1 className="text-3xl md:text-4xl font-bold mb-2">This Page is Under Construction</h1>
-        <p className="text-lg text-gray-400">We're working hard to bring this page to life. Please check back soon.</p>
+    <section className="text-center w-full max-w-md px-6 md:px-0">
+      <div className="text-6xl mb-4">🚧</div>
+      <h1 className="text-3xl md:text-4xl font-bold mb-2">
+        This Page is Under Construction
+      </h1>
+      <p className="text-lg text-gray-400">
+        We&rsquo;re working hard to bring this page to life. Please check back soon.
+      </p>
+
+      <div className="w-full mt-6">
+        <p className="mb-2 text-sm text-gray-400">Loading progress...</p>
+        <div
+          className="w-full bg-zinc-800 rounded-full h-3 overflow-hidden shadow-md shadow-red-500/30"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+        >
+          <div className="h-full loading-loop-bar" />
+        </div>
       </div>
-
-
-    </main>
+    </section>
+  </main>
   );
 }
