@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar';
 import { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
 import ProductCard from '../components/Productcard';
-
+import Footer from '../components/Footer';
 export default function ShopPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [allProducts, setAllProducts] = useState<any[]>([]);
@@ -124,6 +124,7 @@ export default function ShopPage() {
           </button>
         </div>
       )}
+      < Footer/>
     </main>
   );
 }

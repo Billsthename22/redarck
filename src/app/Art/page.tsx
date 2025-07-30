@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import ProductCard from '../components/Productcard';
 import { Search } from 'lucide-react';
-
+import Footer from '../components/Footer';
 interface Art {
   _id: string;
   title: string;
@@ -128,6 +128,7 @@ export default function ArtPage() {
           &gt;
         </button>
       </div>
+      <Footer/>
       </main>
 
   );

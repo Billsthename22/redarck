@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-
+import Footer from '../components/Footer';
 export default function CustomOrderPage() {
   const [form, setForm] = useState({
     fullName: '',
@@ -54,7 +54,8 @@ export default function CustomOrderPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center px-4">
+    <>
+     <div className="min-h-screen bg-black flex items-center justify-center px-4">
       <div className="w-full max-w-xl bg-zinc-900 p-8 rounded-2xl shadow-xl space-y-8">
         <div className="text-center">
           <h1 className="text-3xl sm:text-4xl font-koulen text-white mb-2">
@@ -192,5 +193,8 @@ export default function CustomOrderPage() {
         </form>
       </div>
     </div>
+    <Footer/>
+    </>
+   
   );
 }

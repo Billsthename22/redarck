@@ -7,7 +7,7 @@ import { useCart } from '@/app/Context/cartcontext';
 import Image from 'next/image';
 import Link from 'next/link';
 import ProductCard from '@/app/components/Productcard';
-
+import Footer from '@/app/components/Footer';
 interface ProductType {
   _id: string;
   title: string;
@@ -239,6 +239,7 @@ export default function ProductPage() {
 </section>
 
         )}
+        <Footer/>
       </main>
     </>
   );
