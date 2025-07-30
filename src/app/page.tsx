@@ -379,7 +379,7 @@ export default function Home() {
         <h2 className="font-[koulen] font-normal text-[32px] sm:text-[48px] leading-[100%] mb-4">
           LET&apos;S CHAT
         </h2>
-        <p className="max-w-xl mx-auto font-[koulen] font-normal text-[14px] sm:text-[16px] leading-[130%] tracking-[0%] text-gray-400 mb-6">
+        <p className="max-w-xl mx-auto font-[koulen] font-normal text-[14px] sm:text-[16px] leading-[130%] tracking-[0%] text-white-400 mb-6">
           Have a question about our designs, an inquiry about an order, or just want to share
           your passion for Christian fashion? We&apos;d love to hear from you! <br />
           <br />
