@@ -6,7 +6,7 @@ import Navbar from '@/app/components/Navbar';
 import { useCart } from '@/app/Context/cartcontext';
 import Image from 'next/image';
 import Link from 'next/link';
-
+import ProductCard from '@/app/components/Productcard';
 
 interface ProductType {
   _id: string;
@@ -25,10 +25,11 @@ export default function ProductPage() {
 
   const [product, setProduct] = useState<ProductType | null>(null);
   const [loading, setLoading] = useState(true);
+  const [relatedProducts, setRelatedProducts] = useState<ProductType[]>([]);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [shirtQuality, setShirtQuality] = useState<'Standard' | 'Premium'>('Standard');
-  const [isExpanded, setIsExpanded] = useState(false); // 🆕 Added for read more toggle
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     if (!productId) return;
@@ -51,12 +52,33 @@ export default function ProductPage() {
     fetchProduct();
   }, [productId]);
 
-  const basePrice = product ? parseFloat(product.price) || 0 : 0;
+  useEffect(() => {
+    const fetchRelated = async () => {
+      try {
+        const res = await fetch(`/api/products`);
+        const data = await res.json();
+        const filtered = data.filter((p: ProductType) => p._id !== productId);
+        const shuffled = filtered.sort(() => 0.5 - Math.random());
+        setRelatedProducts(shuffled.slice(0, 3));
+      } catch (error) {
+        console.error('Failed to fetch related products', error);
+      }
+    };
+
+    fetchRelated();
+  }, [productId]);
+
+  const parsePrice = (price: string) => {
+    const cleaned = price.replace(/,/g, '');
+    const number = parseFloat(cleaned);
+    return isNaN(number) ? 0 : number;
+  };
+
+  const basePrice = product ? parsePrice(product.price) : 0;
   const finalPrice = shirtQuality === 'Premium' ? basePrice + 7000 : basePrice;
 
   const handleAddToCart = () => {
     if (!product) return;
-
     if (!selectedSize || !selectedColor) {
       alert('Please select size and color');
       return;
@@ -87,19 +109,19 @@ export default function ProductPage() {
 
   return (
     <>
+      <Navbar />
 
-     <Navbar />
+      <main className="bg-black text-white min-h-screen px-4 pt-32 pb-20">
+        <div className="max-w-7xl mx-auto mb-4">
+          <Link href="/shop" className="text-zinc-400 hover:text-white underline">
+            ← Back to Products
+          </Link>
+        </div>
 
-      <main className="bg-black text-white min-h-screen px-4 pt-32 pb-12">
-      <div className="max-w-7xl mx-auto mb-4">
-    <Link href="/shop" className="text-zinc-400 hover:text-white underline">
-      ← Back to Products
-    </Link>
-  </div>
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start gap-12">
           {/* Product Image */}
           <div className="md:w-1/2 w-full flex justify-center items-center">
-            <div className="w-[900px] h-[600px] rounded-xl overflow-hidden p-1 flex justify-center items-center shadow-lg ">
+            <div className="w-[900px] h-[600px] rounded-xl overflow-hidden p-1 flex justify-center items-center shadow-lg">
               <Image
                 src={product.imageSrc}
                 alt={product.title}
@@ -110,7 +132,7 @@ export default function ProductPage() {
               />
             </div>
           </div>
- 
+
           {/* Product Info */}
           <div className="md:w-1/2 w-full space-y-6">
             <h1 className="text-3xl font-bold">{product.title}</h1>
@@ -124,9 +146,7 @@ export default function ProductPage() {
                 <label className="block text-sm mb-2 font-semibold">Shirt Quality</label>
                 <select
                   value={shirtQuality}
-                  onChange={(e) =>
-                    setShirtQuality(e.target.value as 'Standard' | 'Premium')
-                  }
+                  onChange={(e) => setShirtQuality(e.target.value as 'Standard' | 'Premium')}
                   className="w-full bg-zinc-800 border border-gray-600 text-white px-4 py-3 rounded-md"
                 >
                   <option value="Standard">Standard</option>
@@ -134,7 +154,7 @@ export default function ProductPage() {
                 </select>
               </div>
 
-              {/* Product Description with Read More */}
+              {/* Description */}
               <div className="text-md leading-relaxed text-zinc-400">
                 <p>{displayedDescription}</p>
                 {shouldTruncate && (
@@ -192,6 +212,26 @@ export default function ProductPage() {
             </button>
           </div>
         </div>
+
+        {/* Related Products */}
+        {relatedProducts.length > 0 && (
+          <section className="max-w-7xl mx-auto mt-20">
+            <h2 className="text-xl font-bold mb-4 border-b border-zinc-700 pb-2">
+              You May Also Like
+            </h2>
+            <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-red-500">
+              {relatedProducts.map((item) => (
+                <ProductCard
+                  key={item._id}
+                  id={item._id}
+                  imageSrc={item.imageSrc}
+                  title={item.title}
+                  price={item.price}
+                />
+              ))}
+            </div>
+          </section>
+        )}
       </main>
     </>
   );

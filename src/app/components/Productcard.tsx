@@ -36,25 +36,27 @@ export default function ProductCard({ id, imageSrc, title, price, route = 'produ
 
   return (
     <div className="text-white w-[180px] h-[280px] sm:w-[220px] sm:h-[330px] md:w-[280px] md:h-[400px] lg:w-[340px] lg:h-[480px] xl:w-[362px] xl:h-[509px] opacity-100 transform rotate-0 transition-transform hover:scale-105">
-      <Link href={getHref()}>
-        <div className="w-full h-[70%] bg-zinc-300 mb-2 rounded-md overflow-hidden cursor-pointer">
-          <Image
-            src={imageSource}
-            alt={title || 'Product'}
-            width={400}
-            height={400}
-            className="w-full h-full object-cover"
-            priority
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.src = fallbackImage;
-            }}
-          />
-        </div>
-      </Link>
+    <Link href={getHref()}>
+      <div className="w-full h-[70%] bg-zinc-300 mb-2 rounded-md overflow-hidden cursor-pointer">
+        <Image
+          src={imageSource}
+          alt={title || 'Product'}
+          width={400}
+          height={400}
+          className="w-full h-full object-cover"
+          priority
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.src = fallbackImage;
+          }}
+        />
+      </div>
+    </Link>
 
-      <h3 className="text-xs uppercase mt-1">{title}</h3>
-      <p className="text-xs">{price}</p>
-    </div>
+    <h3 className="text-xs uppercase mt-1">{title}</h3>
+    <p className="text-xs font-semibold text-yellow-300">
+      ₦{parseFloat(price).toLocaleString('en-NG')}
+    </p>
+  </div>
   );
 }
