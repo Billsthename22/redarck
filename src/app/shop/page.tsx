@@ -46,12 +46,12 @@ export default function ShopPage() {
   };
 
   return (
-    <main className="bg-black text-white min-h-screen flex flex-col justify-between pt-20">
+    <main className="bg-black text-white min-h-screen flex flex-col pt-20">
 
       <Navbar />
 
       {/* Search */}
-      <div className="flex justify-center mt-8 mb-4">
+      <div className="flex justify-center mt-10">
         <div className="relative w-full max-w-md">
           <input
             type="text"
@@ -68,10 +68,10 @@ export default function ShopPage() {
       </div>
 
       {/* Products */}
-      <section className="max-w-screen-xl mx-auto px-4 pt-4">
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 md:gap-8">
-          {paginatedProducts.length > 0 ? (
-            paginatedProducts.map(product => (
+      <section className="max-w-screen-xl mx-auto px-4 pt-10 flex-1">
+        {paginatedProducts.length > 0 ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 md:gap-8">
+            {paginatedProducts.map(product => (
               <ProductCard
                 key={product._id}
                 id={product._id}
@@ -79,43 +79,51 @@ export default function ShopPage() {
                 title={product.title}
                 price={product.price}
               />
-            ))
-          ) : (
-            <p className="col-span-full text-center text-gray-400">Light turning on</p>
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex items-center justify-center h-96">
+            <p className="text-yellow-300 font-bold text-4xl text-glow animate-glow text-center">
+              Light turning on
+            </p>
+          </div>
+        )}
       </section>
 
       {/* Pagination */}
-      <div className="flex justify-center items-center gap-2 py-10">
-        <button
-          onClick={goToPrevious}
-          disabled={currentPage === 1}
-          className={`w-8 h-8 rounded-sm text-sm font-semibold ${
-            currentPage === 1
-              ? 'bg-gray-600 text-white cursor-not-allowed'
-              : 'bg-white text-black hover:bg-red-500 hover:text-white'
-          }`}
-        >
-          &lt;
-        </button>
+      {filteredProducts.length > 0 && (
+        <div className="flex justify-center items-center gap-2 py-10">
+          <button
+            onClick={goToPrevious}
+            disabled={currentPage === 1}
+            className={`w-8 h-8 rounded-sm text-sm font-semibold ${
+              currentPage === 1
+                ? 'bg-gray-600 text-white cursor-not-allowed'
+                : 'bg-white text-black hover:bg-red-500 hover:text-white'
+            }`}
+            aria-label="Previous page"
+          >
+            &lt;
+          </button>
 
-        <span className="w-8 h-8 flex items-center justify-center rounded-sm text-sm font-bold bg-red-700 text-white">
-          {currentPage}
-        </span>
+          <span className="w-8 h-8 flex items-center justify-center rounded-sm text-sm font-bold bg-red-700 text-white">
+            {currentPage}
+          </span>
 
-        <button
-          onClick={goToNext}
-          disabled={currentPage === totalPages}
-          className={`w-8 h-8 rounded-sm text-sm font-semibold ${
-            currentPage === totalPages
-              ? 'bg-gray-600 text-white cursor-not-allowed'
-              : 'bg-white text-black hover:bg-red-500 hover:text-white'
-          }`}
-        >
-          &gt;
-        </button>
-      </div>
+          <button
+            onClick={goToNext}
+            disabled={currentPage === totalPages}
+            className={`w-8 h-8 rounded-sm text-sm font-semibold ${
+              currentPage === totalPages
+                ? 'bg-gray-600 text-white cursor-not-allowed'
+                : 'bg-white text-black hover:bg-red-500 hover:text-white'
+            }`}
+            aria-label="Next page"
+          >
+            &gt;
+          </button>
+        </div>
+      )}
     </main>
   );
 }
