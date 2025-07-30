@@ -214,7 +214,24 @@ export default function ProductPage() {
         </div>
 
         {/* Related Products */}
-      
+        {relatedProducts.length > 0 && (
+          <section className="max-w-7xl mx-auto mt-20">
+            <h2 className="text-xl font-bold mb-4 border-b border-zinc-700 pb-2">
+              You May Also Like
+            </h2>
+            <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-red-500">
+              {relatedProducts.map((item) => (
+                <ProductCard
+                  key={item._id}
+                  id={item._id}
+                  imageSrc={item.imageSrc}
+                  title={item.title}
+                  price={item.price}
+                />
+              ))}
+            </div>
+          </section>
+        )}
       </main>
     </>
   );
