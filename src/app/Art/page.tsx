@@ -19,9 +19,11 @@ export default function ArtPage() {
   // const [currentPage, setCurrentPage] = useState(1);
   // const itemsPerPage = 9;
 
+
   // useEffect(() => {
   //   fetchArts();
   // }, []);
+
 
   // const fetchArts = async () => {
   //   try {
@@ -34,9 +36,11 @@ export default function ArtPage() {
   //   }
   // };
 
+
   // const filteredArtworks = allArtworks.filter(art =>
   //   art.title.toLowerCase().includes(searchQuery.toLowerCase())
   // );
+
 
   // const totalPages = Math.ceil(filteredArtworks.length / itemsPerPage);
   // const paginatedArtworks = filteredArtworks.slice(
@@ -44,14 +48,17 @@ export default function ArtPage() {
   //   currentPage * itemsPerPage
   // );
 
+
   // const goToPrevious = () => currentPage > 1 && setCurrentPage(prev => prev - 1);
   // const goToNext = () => currentPage < totalPages && setCurrentPage(prev => prev + 1);
+
 
   // const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   setSearchQuery(e.target.value);
   //   setCurrentPage(1);
   // };
 
+  
   return (
     <main className="bg-black text-white min-h-screen flex flex-col justify-center items-center pt-20 px-4">
     <Navbar />
