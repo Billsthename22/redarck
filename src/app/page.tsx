@@ -398,7 +398,7 @@ export default function Home() {
             Instagram
           </a>
           <a
-            href="https://wa.me/2347072109057"
+            href="https://wa.me/2348110749341"
             target="_blank"
             rel="noopener noreferrer"
             className="bg-purple-500 hover:bg-purple-600 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded transition font-[koulen] text-[12px] sm:text-[16px]"
