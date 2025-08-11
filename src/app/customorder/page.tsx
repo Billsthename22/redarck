@@ -195,6 +195,5 @@ export default function CustomOrderPage() {
     </div>
     <Footer/>
     </>
-   
   );
 }
