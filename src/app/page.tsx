@@ -145,7 +145,7 @@ export default function Home() {
             className="relative w-[640px] h-[639px] rounded-[37px] overflow-hidden block group"
           >
             <Image
-              src="/newrelease.png"
+              src="/newrelease2.jpeg"
               alt="New Release"
               fill
               className="object-cover group-hover:scale-110 transition"
@@ -201,7 +201,7 @@ export default function Home() {
             className="relative w-full h-[400px] rounded-[30px] overflow-hidden block group"
           >
             <Image
-              src="/newrelease.png"
+              src="/newrelease2.jpeg"
               alt="New Release"
               fill
               className="object-cover group-hover:scale-105 transition"
@@ -252,7 +252,7 @@ export default function Home() {
             className="relative w-full h-[300px] rounded-[20px] overflow-hidden block group"
           >
             <Image
-              src="/newrelease.png"
+              src="/newrelease2.jpeg"
               alt="New Release"
               fill
               className="object-cover group-hover:scale-105 transition"
