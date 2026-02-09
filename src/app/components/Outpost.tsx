@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
-const images = ['/shoot1.png', '/shoot2.png', '/shoot3.png'];
+const images = ['/shoot1.png', '/shoot22.jpeg', '/shoot33.jpeg'];
 const hoverTexts = ['JOIN', 'REDACK', 'ARMY'];
 
 export default function OutpostSection() {
