@@ -145,7 +145,7 @@ export default function Home() {
             className="relative w-[640px] h-[639px] rounded-[37px] overflow-hidden block group"
           >
             <Image
-              src="/newrelease2.jpeg"
+              src="/newrelease3.jpeg"
               alt="New Release"
               fill
               className="object-cover group-hover:scale-110 transition"

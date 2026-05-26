@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 const slides = [
   { src: '/shoot1.png', label: 'JOIN' },
-  { src: '/shoot22.jpeg', label: 'REDACK' },
+  { src: '/Outpost4.jpeg', label: 'REDACK' },
   { src: '/shoot33.jpeg', label: 'ARMY' },
 ];
 
@@ -16,6 +16,7 @@ export default function OutpostSection() {
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % slides.length);
     }, 4000);
+    
     return () => clearInterval(interval);
   }, []);
 
