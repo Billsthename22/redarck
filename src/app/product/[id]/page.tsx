@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, TouchEvent } from 'react';
 import { useParams } from 'next/navigation';
 import Navbar from '@/app/components/Navbar';
 import { useCart } from '@/app/Context/cartcontext';
@@ -16,7 +16,7 @@ interface ProductType {
   imageSrc: string;
   sizes: string[];
   colors: string[];
-  colorImages?: string[]; // Added to capture secondary view images
+  colorImages?: string[]; 
 }
 
 export default function ProductPage() {
@@ -32,8 +32,11 @@ export default function ProductPage() {
   const [shirtQuality, setShirtQuality] = useState<'Standard' | 'Premium'>('Standard');
   const [isExpanded, setIsExpanded] = useState(false);
   
-  // Track active main image view state
   const [activeImage, setActiveImage] = useState<string>('');
+  
+  // Touch coordinates state for native swipe tracking
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   useEffect(() => {
     if (!productId) return;
@@ -44,7 +47,7 @@ export default function ProductPage() {
         if (!res.ok) throw new Error('Failed to fetch product');
         const data = await res.json();
         setProduct(data);
-        setActiveImage(data.imageSrc || ''); // Initialize active view
+        setActiveImage(data.imageSrc || ''); 
         setSelectedSize(data.sizes?.[0] || '');
         setSelectedColor(data.colors?.[0] || '');
       } catch (error) {
@@ -81,6 +84,42 @@ export default function ProductPage() {
 
   const basePrice = product ? parsePrice(product.price) : 0;
   const finalPrice = shirtQuality === 'Premium' ? basePrice + 7000 : basePrice;
+
+  // Aggregate main image with secondary views safely
+  const allImages = product 
+    ? [product.imageSrc, ...(product.colorImages || [])].filter((src) => src && src.trim() !== '')
+    : [];
+
+  // Handle Swipe logic
+  const handleTouchStart = (e: TouchEvent) => {
+    setTouchEnd(null); 
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd || allImages.length <= 1) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;   // Threshold of 50px
+    const isRightSwipe = distance < -50;
+    
+    const currentIndex = allImages.indexOf(activeImage || product?.imageSrc || '');
+    if (currentIndex === -1) return;
+
+    if (isLeftSwipe) {
+      // Next image (loop to start if at end)
+      const nextIndex = (currentIndex + 1) % allImages.length;
+      setActiveImage(allImages[nextIndex]);
+    } else if (isRightSwipe) {
+      // Previous image (loop to end if at start)
+      const prevIndex = (currentIndex - 1 + allImages.length) % allImages.length;
+      setActiveImage(allImages[prevIndex]);
+    }
+  };
 
   const handleAddToCart = () => {
     if (!product) return;
@@ -122,12 +161,6 @@ export default function ProductPage() {
     ? product.description
     : product.description.slice(0, maxChars) + (shouldTruncate ? '...' : '');
 
-  // Aggregate main image with secondary views 
-  const allImages = [
-    product.imageSrc,
-    ...(product.colorImages || [])
-  ].filter((src) => src && src.trim() !== '');
-
   return (
     <div className="bg-black text-zinc-200 min-h-screen selection:bg-red-500/50">
       <Navbar />
@@ -143,21 +176,40 @@ export default function ProductPage() {
         {/* Clean 50/50 Layout Grid split */}
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
           
-          {/* LEFT: Visuals & Gallery Carousel (Controlled size container) */}
-          <div className="w-full lg:w-1/2 space-y-4 mx-auto max-w-[500px] lg:max-w-none">
-            {/* Main Window Frame */}
-            <div className="relative aspect-[4/5] w-full bg-zinc-900/20 rounded-2xl overflow-hidden group max-h-[480px] lg:max-h-[550px]">
+          {/* LEFT: Visuals & Gallery Surface with Touch Event Listeners */}
+          <div className="w-full lg:w-1/2 space-y-4 mx-auto max-w-[500px] lg:max-w-none select-none">
+            {/* Main Window Frame with interactive swipe handlers */}
+            <div 
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              className="relative aspect-[4/5] w-full bg-zinc-900/20 rounded-2xl overflow-hidden group max-h-[480px] lg:max-h-[550px] cursor-grab active:cursor-grabbing"
+            >
                 <Image
                     src={activeImage || product.imageSrc}
                     alt={product.title}
                     fill
-                    className="object-contain p-8 md:p-12 transition-all duration-500"
+                    className="object-contain p-8 md:p-12 transition-all duration-500 pointer-events-none"
                     priority
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+                
+                {/* Visual indicator dot arrays for mobile touch visibility */}
+                {allImages.length > 1 && (
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 md:hidden z-10">
+                    {allImages.map((src, idx) => (
+                      <div 
+                        key={idx}
+                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                          (activeImage === src) ? 'w-4 bg-white' : 'w-1.5 bg-white/30'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
             </div>
 
-            {/* Bottom Swiper/Click Gallery */}
+            {/* Bottom Click/Scroll Row Tracker */}
             {allImages.length > 1 && (
               <div className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 scrollbar-none snap-x touch-pan-x justify-center lg:justify-start">
                 {allImages.map((src, idx) => {
