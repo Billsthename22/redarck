@@ -132,7 +132,7 @@ export default function ProductPage() {
     <div className="bg-black text-zinc-200 min-h-screen selection:bg-red-500/50">
       <Navbar />
 
-      <main className="max-w-[1400px] mx-auto px-6 lg:px-10 pt-32 pb-24">
+      <main className="max-w-[1200px] mx-auto px-6 lg:px-8 pt-32 pb-24">
         {/* Navigation */}
         <div className="mb-10">
           <Link href="/shop" className="inline-flex items-center text-[10px] uppercase tracking-[0.4em] text-zinc-500 hover:text-red-500 transition-colors">
@@ -140,17 +140,18 @@ export default function ProductPage() {
           </Link>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
+        {/* Clean 50/50 Layout Grid split */}
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
           
-          {/* LEFT: Visuals & Gallery Carousel */}
-          <div className="w-full lg:w-3/5 space-y-6">
+          {/* LEFT: Visuals & Gallery Carousel (Controlled size container) */}
+          <div className="w-full lg:w-1/2 space-y-4 mx-auto max-w-[500px] lg:max-w-none">
             {/* Main Window Frame */}
-            <div className="relative aspect-[4/5] w-full bg-zinc-900/30 rounded-3xl overflow-hidden group">
+            <div className="relative aspect-[4/5] w-full bg-zinc-900/20 rounded-2xl overflow-hidden group max-h-[480px] lg:max-h-[550px]">
                 <Image
                     src={activeImage || product.imageSrc}
                     alt={product.title}
                     fill
-                    className="object-contain p-6 md:p-16 transition-all duration-500"
+                    className="object-contain p-8 md:p-12 transition-all duration-500"
                     priority
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
@@ -158,16 +159,16 @@ export default function ProductPage() {
 
             {/* Bottom Swiper/Click Gallery */}
             {allImages.length > 1 && (
-              <div className="flex items-center gap-3 overflow-x-auto pb-3 pt-1 scrollbar-none snap-x touch-pan-x">
+              <div className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 scrollbar-none snap-x touch-pan-x justify-center lg:justify-start">
                 {allImages.map((src, idx) => {
                   const isActive = activeImage === src;
                   return (
                     <button
                       key={idx}
                       onClick={() => setActiveImage(src)}
-                      className={`relative w-20 h-24 rounded-xl overflow-hidden bg-zinc-900/50 flex-shrink-0 snap-start transition-all border-2 ${
+                      className={`relative w-14 h-16 rounded-lg overflow-hidden bg-zinc-900/50 flex-shrink-0 snap-start transition-all border ${
                         isActive 
-                          ? 'border-white scale-[0.96] opacity-100 shadow-[0_0_15px_rgba(255,255,255,0.15)]' 
+                          ? 'border-white opacity-100' 
                           : 'border-transparent opacity-40 hover:opacity-80'
                       }`}
                     >
@@ -175,7 +176,7 @@ export default function ProductPage() {
                         src={src}
                         alt={`${product.title} perspective view ${idx + 1}`}
                         fill
-                        className="object-contain p-2"
+                        className="object-contain p-1"
                       />
                     </button>
                   );
@@ -185,13 +186,13 @@ export default function ProductPage() {
           </div>
 
           {/* RIGHT: Configuration */}
-          <div className="w-full lg:w-2/5 space-y-12 py-4">
-            <section className="space-y-4">
-              <h1 className="text-4xl md:text-6xl font-black tracking-tight uppercase leading-[0.9] text-white italic">
+          <div className="w-full lg:w-1/2 space-y-10 py-2">
+            <section className="space-y-3">
+              <h1 className="text-3xl md:text-5xl font-black tracking-tight uppercase leading-[0.95] text-white italic">
                 {product.title}
               </h1>
-              <div className="flex items-center gap-6">
-                <p className="text-3xl font-light text-red-500">
+              <div className="flex items-center gap-4">
+                <p className="text-2xl font-light text-red-500">
                   ₦{finalPrice.toLocaleString()}
                 </p>
                 <div className="h-4 w-[1px] bg-zinc-800" />
@@ -200,14 +201,14 @@ export default function ProductPage() {
             </section>
 
             {/* Quality Select */}
-            <div className="space-y-4">
+            <div className="space-y-3">
               <p className="text-[10px] uppercase tracking-[0.3em] text-zinc-500 font-bold">Selection Grade</p>
               <div className="grid grid-cols-2 gap-2 bg-zinc-900/50 p-1 rounded-xl border border-zinc-800">
                 {['Standard', 'Premium'].map((q) => (
                   <button
                     key={q}
                     onClick={() => setShirtQuality(q as 'Standard' | 'Premium')}
-                    className={`py-3 px-4 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${
+                    className={`py-2.5 px-4 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${
                       shirtQuality === q 
                       ? 'bg-zinc-800 text-white shadow-xl' 
                       : 'text-zinc-500 hover:text-zinc-300'
@@ -220,18 +221,18 @@ export default function ProductPage() {
             </div>
 
             {/* Size & Color Blocks */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {product.sizes?.length > 0 && (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <p className="text-[10px] uppercase tracking-[0.3em] text-zinc-500 font-bold">Size</p>
                   <div className="flex flex-wrap gap-2">
                     {product.sizes.map((size) => (
                       <button
                         key={size}
                         onClick={() => setSelectedSize(size)}
-                        className={`w-10 h-10 flex items-center justify-center rounded-lg border text-[11px] font-bold transition-all ${
+                        className={`w-9 h-9 flex items-center justify-center rounded-lg border text-[11px] font-bold transition-all ${
                           selectedSize === size
-                            ? 'bg-white text-black border-white shadow-[0_0_15px_rgba(255,255,255,0.3)]'
+                            ? 'bg-white text-black border-white'
                             : 'border-zinc-800 text-zinc-500 hover:border-zinc-500'
                         }`}
                       >
@@ -243,14 +244,14 @@ export default function ProductPage() {
               )}
 
               {product.colors?.length > 0 && (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <p className="text-[10px] uppercase tracking-[0.3em] text-zinc-500 font-bold">Colorway</p>
                   <div className="flex flex-wrap gap-2">
                     {product.colors.map((color) => (
                       <button
                         key={color}
                         onClick={() => setSelectedColor(color)}
-                        className={`h-10 px-4 flex items-center justify-center rounded-lg border text-[10px] uppercase font-bold tracking-tighter transition-all ${
+                        className={`h-9 px-3 flex items-center justify-center rounded-lg border text-[10px] uppercase font-bold tracking-tighter transition-all ${
                           selectedColor === color
                             ? 'bg-red-600 border-red-600 text-white'
                             : 'border-zinc-800 text-zinc-500 hover:border-zinc-500'
@@ -265,8 +266,8 @@ export default function ProductPage() {
             </div>
 
             {/* Description */}
-            <div className="space-y-4 pt-6 border-t border-zinc-900">
-              <p className="text-zinc-500 text-sm leading-relaxed italic font-light">
+            <div className="space-y-3 pt-6 border-t border-zinc-900">
+              <p className="text-white text-sm leading-relaxed italic font-light">
                 {displayedDescription}
               </p>
               {shouldTruncate && (
@@ -282,7 +283,7 @@ export default function ProductPage() {
             {/* Final Action */}
             <button
               onClick={handleAddToCart}
-              className="w-full relative group overflow-hidden bg-white text-black py-6 rounded-2xl font-black text-xs uppercase tracking-[0.5em] transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full relative group overflow-hidden bg-white text-black py-5 rounded-xl font-black text-xs uppercase tracking-[0.5em] transition-all hover:scale-[1.01] active:scale-[0.99]"
             >
               <span className="relative z-10">Add to Cart</span>
               <div className="absolute inset-0 bg-red-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
@@ -295,11 +296,11 @@ export default function ProductPage() {
 
         {/* Related Section */}
         {relatedProducts.length > 0 && (
-          <section className="mt-40 border-t border-zinc-900 pt-20">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+          <section className="mt-32 border-t border-zinc-900 pt-16">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
               <div className="space-y-1">
                 <p className="text-red-600 text-[10px] uppercase tracking-[0.5em] font-bold">Recommendations</p>
-                <h2 className="text-4xl font-black uppercase tracking-tighter italic text-white leading-none">
+                <h2 className="text-3xl font-black uppercase tracking-tighter italic text-white leading-none">
                   YOU MAY ALSO <span className="text-zinc-600">LIKE</span>
                 </h2>
               </div>
@@ -309,15 +310,15 @@ export default function ProductPage() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {relatedProducts.map((item) => (
                 <Link href={`/product/${item._id}`} key={item._id} className="group">
-                  <div className="relative aspect-[4/5] w-full overflow-hidden bg-zinc-900 mb-4">
+                  <div className="relative aspect-[4/5] w-full overflow-hidden bg-zinc-900 mb-3 rounded-xl max-h-[320px]">
                     <Image
                       src={item.imageSrc}
                       alt={item.title}
                       fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="object-contain p-4 transition-transform duration-500 group-hover:scale-103"
                     />
                   </div>
                   <div className="space-y-1">
