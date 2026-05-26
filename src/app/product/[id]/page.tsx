@@ -16,6 +16,7 @@ interface ProductType {
   imageSrc: string;
   sizes: string[];
   colors: string[];
+  colorImages?: string[]; // Added to capture secondary view images
 }
 
 export default function ProductPage() {
@@ -30,6 +31,9 @@ export default function ProductPage() {
   const [selectedColor, setSelectedColor] = useState('');
   const [shirtQuality, setShirtQuality] = useState<'Standard' | 'Premium'>('Standard');
   const [isExpanded, setIsExpanded] = useState(false);
+  
+  // Track active main image view state
+  const [activeImage, setActiveImage] = useState<string>('');
 
   useEffect(() => {
     if (!productId) return;
@@ -40,6 +44,7 @@ export default function ProductPage() {
         if (!res.ok) throw new Error('Failed to fetch product');
         const data = await res.json();
         setProduct(data);
+        setActiveImage(data.imageSrc || ''); // Initialize active view
         setSelectedSize(data.sizes?.[0] || '');
         setSelectedColor(data.colors?.[0] || '');
       } catch (error) {
@@ -117,6 +122,12 @@ export default function ProductPage() {
     ? product.description
     : product.description.slice(0, maxChars) + (shouldTruncate ? '...' : '');
 
+  // Aggregate main image with secondary views 
+  const allImages = [
+    product.imageSrc,
+    ...(product.colorImages || [])
+  ].filter((src) => src && src.trim() !== '');
+
   return (
     <div className="bg-black text-zinc-200 min-h-screen selection:bg-red-500/50">
       <Navbar />
@@ -131,18 +142,46 @@ export default function ProductPage() {
 
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
           
-          {/* LEFT: Visuals */}
+          {/* LEFT: Visuals & Gallery Carousel */}
           <div className="w-full lg:w-3/5 space-y-6">
+            {/* Main Window Frame */}
             <div className="relative aspect-[4/5] w-full bg-zinc-900/30 rounded-3xl overflow-hidden group">
                 <Image
-                    src={product.imageSrc}
+                    src={activeImage || product.imageSrc}
                     alt={product.title}
                     fill
-                    className="object-contain p-6 md:p-16 transition-transform duration-1000 group-hover:scale-105"
+                    className="object-contain p-6 md:p-16 transition-all duration-500"
                     priority
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
             </div>
+
+            {/* Bottom Swiper/Click Gallery */}
+            {allImages.length > 1 && (
+              <div className="flex items-center gap-3 overflow-x-auto pb-3 pt-1 scrollbar-none snap-x touch-pan-x">
+                {allImages.map((src, idx) => {
+                  const isActive = activeImage === src;
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveImage(src)}
+                      className={`relative w-20 h-24 rounded-xl overflow-hidden bg-zinc-900/50 flex-shrink-0 snap-start transition-all border-2 ${
+                        isActive 
+                          ? 'border-white scale-[0.96] opacity-100 shadow-[0_0_15px_rgba(255,255,255,0.15)]' 
+                          : 'border-transparent opacity-40 hover:opacity-80'
+                      }`}
+                    >
+                      <Image
+                        src={src}
+                        alt={`${product.title} perspective view ${idx + 1}`}
+                        fill
+                        className="object-contain p-2"
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* RIGHT: Configuration */}
@@ -255,51 +294,45 @@ export default function ProductPage() {
         </div>
 
         {/* Related Section */}
-{relatedProducts.length > 0 && (
-  <section className="mt-40 border-t border-zinc-900 pt-20">
-    {/* Header Section */}
-    <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
-      <div className="space-y-1">
-        <p className="text-red-600 text-[10px] uppercase tracking-[0.5em] font-bold">Recommendations</p>
-        <h2 className="text-4xl font-black uppercase tracking-tighter italic text-white leading-none">
-          YOU MAY ALSO <span className="text-zinc-600">LIKE</span>
-        </h2>
-      </div>
-      <div className="hidden md:block flex-1 h-[1px] bg-zinc-800/30 mx-10 mb-2" />
-      <Link href="/shop" className="text-[10px] uppercase tracking-widest text-zinc-500 hover:text-white transition-colors">
-        VIEW COLLECTION
-      </Link>
-    </div>
+        {relatedProducts.length > 0 && (
+          <section className="mt-40 border-t border-zinc-900 pt-20">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+              <div className="space-y-1">
+                <p className="text-red-600 text-[10px] uppercase tracking-[0.5em] font-bold">Recommendations</p>
+                <h2 className="text-4xl font-black uppercase tracking-tighter italic text-white leading-none">
+                  YOU MAY ALSO <span className="text-zinc-600">LIKE</span>
+                </h2>
+              </div>
+              <div className="hidden md:block flex-1 h-[1px] bg-zinc-800/30 mx-10 mb-2" />
+              <Link href="/shop" className="text-[10px] uppercase tracking-widest text-zinc-500 hover:text-white transition-colors">
+                VIEW COLLECTION
+              </Link>
+            </div>
 
-    {/* The Fixed Grid - This prevents the "jumbled" look */}
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
-      {relatedProducts.map((item) => (
-        <Link href={`/product/${item._id}`} key={item._id} className="group">
-          {/* Image Container: Enforces 4:5 aspect ratio so all items are perfectly aligned */}
-          <div className="relative aspect-[4/5] w-full overflow-hidden bg-zinc-900 mb-4">
-            <Image
-              src={item.imageSrc}
-              alt={item.title}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-          </div>
-          
-          {/* Text alignment: Matches your image style */}
-          <div className="space-y-1">
-            <h3 className="text-[11px] uppercase tracking-widest font-bold text-white group-hover:text-red-500 transition-colors">
-              {item.title}
-            </h3>
-            <p className="text-[11px] text-zinc-500 font-medium">
-              ₦{parsePrice(item.price).toLocaleString()}
-            </p>
-          </div>
-        </Link>
-      ))}
-    </div>
-  </section>
-)}
-
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+              {relatedProducts.map((item) => (
+                <Link href={`/product/${item._id}`} key={item._id} className="group">
+                  <div className="relative aspect-[4/5] w-full overflow-hidden bg-zinc-900 mb-4">
+                    <Image
+                      src={item.imageSrc}
+                      alt={item.title}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-[11px] uppercase tracking-widest font-bold text-white group-hover:text-red-500 transition-colors">
+                      {item.title}
+                    </h3>
+                    <p className="text-[11px] text-zinc-500 font-medium">
+                      ₦{parsePrice(item.price).toLocaleString()}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
 
       <Footer />

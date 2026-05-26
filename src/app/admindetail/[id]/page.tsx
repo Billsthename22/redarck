@@ -39,6 +39,10 @@ export default function AdminDetailPage() {
   const [item, setItem] = useState<Item | null>(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // Track the active image view
+  const [activeImage, setActiveImage] = useState<string>('/placeholder.png');
+  
   const [formData, setFormData] = useState({
     title: '',
     price: '',
@@ -64,6 +68,8 @@ export default function AdminDetailPage() {
       })
       .then((data) => {
         setItem(data);
+        // Set initial active main image
+        setActiveImage(data.imageSrc || '/placeholder.png');
         setFormData({
           title: data.title || '',
           price: data.price || '',
@@ -175,6 +181,12 @@ export default function AdminDetailPage() {
   const isValidImage = (src: string) =>
     src && typeof src === 'string' && !src.startsWith('blob:') && src.trim() !== '';
 
+  // Gather all available image sources to construct the thumbnail list
+  const allImages = [
+    item.imageSrc,
+    ...(item.colorImages || [])
+  ].filter(isValidImage);
+
   return (
     <main className="bg-black text-white min-h-screen px-4 py-8">
       <Adminnavbar />
@@ -192,15 +204,16 @@ export default function AdminDetailPage() {
 
       {/* Item Details */}
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-12">
-        {/* Left: Image */}
+        {/* Left: Image Viewer */}
         <div className="md:w-1/2 space-y-4">
-          <div className="w-full h-[500px] bg-zinc-700 rounded-md overflow-hidden">
+          {/* Main Display Image */}
+          <div className="w-full h-[500px] bg-zinc-700 rounded-md overflow-hidden relative">
             <Image
-              src={isValidImage(item?.imageSrc) ? item.imageSrc : '/placeholder.png'}
+              src={isValidImage(activeImage) ? activeImage : '/placeholder.png'}
               alt={item?.title || `${itemType} Image`}
               width={500}
               height={500}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover transition-all duration-300"
               priority
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
@@ -209,27 +222,33 @@ export default function AdminDetailPage() {
             />
           </div>
 
-          {/* Color Images */}
-          {item.colorImages && item.colorImages.length > 0 && (
-            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
-              {item.colorImages.map((src: string, i: number) => (
-                <div
-                  key={i}
-                  className="w-[60px] h-[60px] overflow-hidden rounded-md bg-zinc-500 flex-shrink-0"
-                >
-                  <Image
-                    src={isValidImage(src) ? src : '/placeholder.png'}
-                    alt={`Color ${i}`}
-                    width={60}
-                    height={60}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = '/placeholder.png';
-                    }}
-                  />
-                </div>
-              ))}
+          {/* Swipeable / Clickable Thumbnail Gallery */}
+          {allImages.length > 1 && (
+            <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-black snap-x">
+              {allImages.map((src: string, i: number) => {
+                const isActive = activeImage === src;
+                return (
+                  <button
+                    key={i}
+                    onClick={() => setActiveImage(src)}
+                    className={`w-[70px] h-[70px] overflow-hidden rounded-md bg-zinc-500 flex-shrink-0 snap-start transition-all border-2 ${
+                      isActive ? 'border-red-500 scale-95 shadow-lg' : 'border-transparent opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    <Image
+                      src={src}
+                      alt={`${itemType} view ${i + 1}`}
+                      width={70}
+                      height={70}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/placeholder.png';
+                      }}
+                    />
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>
