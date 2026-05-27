@@ -11,7 +11,7 @@ export default function ShopPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [allProducts, setAllProducts] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Changed to even number for better 2-column alignment
+  const itemsPerPage = 12; // Changed to even number for better 2-column alignment
 
   useEffect(() => {
     const fetchProducts = async () => {

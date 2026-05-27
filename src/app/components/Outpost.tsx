@@ -16,7 +16,7 @@ export default function OutpostSection() {
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % slides.length);
     }, 4000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
