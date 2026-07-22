@@ -11,6 +11,7 @@ const slides = [
 
 export default function OutpostSection() {
   const [current, setCurrent] = useState(0);
+  const [loaded, setLoaded] = useState<boolean[]>(() => slides.map(() => false));
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -19,6 +20,15 @@ export default function OutpostSection() {
 
     return () => clearInterval(interval);
   }, []);
+
+  const markLoaded = (index: number) => {
+    setLoaded((prev) => {
+      if (prev[index]) return prev;
+      const next = [...prev];
+      next[index] = true;
+      return next;
+    });
+  };
 
   return (
     <section className="px-6 py-16 bg-black text-white flex justify-center overflow-hidden">
@@ -39,11 +49,22 @@ export default function OutpostSection() {
                 ${index === 2 ? 'col-span-4 mt-20 h-[450px]' : ''}
               `}
             >
+              {/* Skeleton */}
+              {!loaded[index] && (
+                <div
+                  className="absolute inset-0 bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-800 bg-[length:200%_100%]"
+                  style={{ animation: 'skeleton-shimmer 1.5s ease-in-out infinite' }}
+                  aria-hidden="true"
+                />
+              )}
               <Image
                 src={slide.src}
                 alt={slide.label}
                 fill
-                className="object-cover transition-transform duration-700 group-hover:scale-110"
+                className={`object-cover transition-all duration-700 group-hover:scale-110 ${
+                  loaded[index] ? 'opacity-100' : 'opacity-0'
+                }`}
+                onLoad={() => markLoaded(index)}
               />
               {/* Animated Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
@@ -64,11 +85,22 @@ export default function OutpostSection() {
                 index === current ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
               }`}
             >
+              {/* Skeleton */}
+              {!loaded[index] && (
+                <div
+                  className="absolute inset-0 bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-800 bg-[length:200%_100%]"
+                  style={{ animation: 'skeleton-shimmer 1.5s ease-in-out infinite' }}
+                  aria-hidden="true"
+                />
+              )}
               <Image
                 src={slide.src}
                 alt={slide.label}
                 fill
-                className="object-cover"
+                className={`object-cover transition-opacity duration-500 ${
+                  loaded[index] ? 'opacity-100' : 'opacity-0'
+                }`}
+                onLoad={() => markLoaded(index)}
               />
               {/* Mobile Text Overlay */}
               <div className="absolute inset-0 flex flex-col justify-end p-10 bg-gradient-to-t from-black/90 to-transparent">
@@ -77,18 +109,29 @@ export default function OutpostSection() {
               </div>
             </div>
           ))}
-          
+
           {/* Progress Indicators */}
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
             {slides.map((_, i) => (
-              <div 
-                key={i} 
-                className={`h-1 transition-all duration-500 rounded-full ${i === current ? 'w-8 bg-white' : 'w-2 bg-white/30'}`} 
+              <div
+                key={i}
+                className={`h-1 transition-all duration-500 rounded-full ${i === current ? 'w-8 bg-white' : 'w-2 bg-white/30'}`}
               />
             ))}
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes skeleton-shimmer {
+          0% {
+            background-position: 200% 0;
+          }
+          100% {
+            background-position: -200% 0;
+          }
+        }
+      `}</style>
     </section>
   );
 }
