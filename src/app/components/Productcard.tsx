@@ -1,5 +1,4 @@
 'use client';
-
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -22,7 +21,7 @@ export default function ProductCard({ id, imageSrc, title, price, route = 'produ
     return src && typeof src === 'string' && src.trim() !== '' && !src.startsWith('blob:');
   };
 
-  // Fallback image URL
+  // Fallback image URL//
   const fallbackImage = '/placeholder.png';
   const imageSource = hasErrored
     ? fallbackImage

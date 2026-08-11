@@ -7,7 +7,7 @@ import CartSidebar from "@/app/components/CartSidebar";
 import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
-  title: "Redarck",
+  title: "Redack",
   description: "Your app description",
 };
 
