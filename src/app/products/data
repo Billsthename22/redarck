@@ -1,4 +1,4 @@
-export const redarckproducts = [
+export const redackNationProducts = [
   {
     id: '1',
     title: 'LOREM IPSUM',
