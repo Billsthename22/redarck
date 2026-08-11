@@ -138,6 +138,7 @@ export default function ProductPage() {
       selectedColor,
       selectedSize,
       shirtQuality,
+      productType: 'product',
       quantity: 1,
     });
   };

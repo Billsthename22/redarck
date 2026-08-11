@@ -14,6 +14,7 @@ type Product = {
   selectedColor?: string;
   selectedSize?: string;
   shirtQuality?: string; // ✅ added
+  productType?: 'product' | 'art';
   quantity: number;
   cartKey?: string;
 };
@@ -46,7 +47,7 @@ const cleanPrice = (raw: string): number => {
 
 // ✅ Include shirtQuality in cart key
 const generateCartKey = (item: Product): string => {
-  return `${item.id}-${item.selectedColor || 'default'}-${item.selectedSize || 'default'}-${item.shirtQuality || 'Standard'}`;
+  return `${item.productType || 'product'}-${item.id}-${item.selectedColor || 'default'}-${item.selectedSize || 'default'}-${item.shirtQuality || 'Standard'}`;
 };
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {

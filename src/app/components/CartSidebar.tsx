@@ -3,6 +3,7 @@
 import { useCart } from '@/app/Context/cartcontext';
 import Image from 'next/image';
 import { Plus, Minus, X, ShoppingBag, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 
 function cleanPrice(raw: string): number {
   if (!raw) return 0;
@@ -11,6 +12,9 @@ function cleanPrice(raw: string): number {
 }
 
 export default function CartSidebar() {
+  const [email, setEmail] = useState('');
+  const [checkoutError, setCheckoutError] = useState('');
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
   const {
     cartItems,
     isOpen,
@@ -18,22 +22,47 @@ export default function CartSidebar() {
     removeFromCart,
     increaseQty,
     decreaseQty,
-    totalAmount,
   } = useCart();
 
-  const whatsappNumber = '2348110749341';
+  const checkoutItems = cartItems.filter((item) => item.productType === 'product');
+  const checkoutTotal = checkoutItems.reduce(
+    (sum, item) => sum + cleanPrice(item.price) * item.quantity,
+    0
+  );
 
-  const handleCheckout = () => {
-    const messageLines = cartItems.map(item => {
-      const itemPrice = cleanPrice(item.price) * item.quantity;
-      let itemDetails = `${item.title}`;
-      if (item.selectedColor) itemDetails += ` - Color: ${item.selectedColor}`;
-      if (item.selectedSize) itemDetails += ` - Size: ${item.selectedSize}`;
-      return `- ${itemDetails} (Qty: ${item.quantity}) - ₦${itemPrice.toLocaleString()}`;
-    });
+  const handleCheckout = async () => {
+    setCheckoutError('');
 
-    const message = `Hello Redack Nation! ⚡️\nI'd like to place an order:\n\n${messageLines.join('\n')}\n\nTotal: ₦${totalAmount.toLocaleString()}`;
-    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+    if (checkoutItems.length === 0) {
+      setCheckoutError('Only shop products can be paid for here.');
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setCheckoutError('Enter a valid email for your payment receipt.');
+      return;
+    }
+
+    setIsCheckingOut(true);
+
+    try {
+      const res = await fetch('/api/paystack/initialize', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, items: checkoutItems }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.authorizationUrl) {
+        throw new Error(data.error || 'Unable to start payment');
+      }
+
+      window.location.href = data.authorizationUrl;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unable to start payment';
+      setCheckoutError(message);
+      setIsCheckingOut(false);
+    }
   };
 
   return (
@@ -140,23 +169,35 @@ export default function CartSidebar() {
           <div className="p-6 bg-zinc-900/50 border-t border-zinc-800 space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-zinc-500 text-xs font-bold uppercase tracking-widest">Subtotal</span>
-              <span className="text-xl font-black text-red-600">₦{totalAmount.toLocaleString()}</span>
+              <span className="text-xl font-black text-red-600">₦{checkoutTotal.toLocaleString()}</span>
             </div>
+
+            <input
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="Email for receipt"
+              className="w-full rounded-xl border border-zinc-800 bg-black px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none transition-colors focus:border-red-600"
+            />
             
             <button
               onClick={handleCheckout}
-              className="group relative w-full overflow-hidden rounded-xl bg-red-600 py-4 font-black uppercase italic tracking-tighter transition-all hover:bg-red-700 active:scale-95"
+              disabled={isCheckingOut || checkoutItems.length === 0}
+              className="group relative w-full overflow-hidden rounded-xl bg-red-600 py-4 font-black uppercase italic tracking-tighter transition-all hover:bg-red-700 active:scale-95 disabled:cursor-not-allowed disabled:bg-zinc-700 disabled:text-zinc-400"
             >
               <span className="relative z-10 flex items-center justify-center gap-2 text-black">
-                Checkout on WhatsApp
+                {isCheckingOut ? 'Starting Payment...' : 'Pay with Paystack'}
                 <span className="bg-black text-red-600 text-[10px] px-2 py-0.5 rounded-full group-hover:scale-110 transition-transform">
-                  {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+                  {checkoutItems.reduce((sum, item) => sum + item.quantity, 0)}
                 </span>
               </span>
             </button>
             <p className="text-[10px] text-center text-zinc-600 font-bold uppercase tracking-widest italic">
-              Payment will be finalized via DM
+              Custom orders are handled separately
             </p>
+            {checkoutError && (
+              <p className="text-xs text-center text-red-500 font-bold">{checkoutError}</p>
+            )}
           </div>
         )}
       </div>
