@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
-export default function PaymentSuccessPage() {
+function PaymentSuccessContent() {
   const searchParams = useSearchParams();
   const reference = searchParams.get('reference');
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
@@ -60,5 +60,23 @@ export default function PaymentSuccessPage() {
         </Link>
       </section>
     </main>
+  );
+}
+
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-black text-white flex items-center justify-center px-6">
+          <section className="w-full max-w-md border border-zinc-800 bg-zinc-950 p-8 text-center space-y-6 rounded-2xl">
+            <p className="text-[10px] uppercase tracking-[0.4em] text-red-500 font-bold">Processing</p>
+            <h1 className="text-3xl font-black uppercase italic">Please Wait</h1>
+            <p className="text-sm text-zinc-400">Loading payment confirmation...</p>
+          </section>
+        </main>
+      }
+    >
+      <PaymentSuccessContent />
+    </Suspense>
   );
 }
