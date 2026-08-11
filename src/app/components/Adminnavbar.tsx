@@ -25,6 +25,7 @@ export default function Navbar() {
             <>
               <Link href="/adminshop">Shop</Link>
               <Link href="/adminart">Art</Link>
+              <Link href="/admindetails">Details</Link>
             </>
           )}
         </div>
@@ -75,6 +76,7 @@ export default function Navbar() {
             <>
               <Link href="/adminshop">Shop</Link>
               <Link href="/adminart">Art</Link>
+              <Link href="/admindetails">Details</Link>
             </>
           )}
           <button

@@ -44,10 +44,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Paystack secret key is not configured' }, { status: 500 });
     }
 
-    const { email, items } = (await req.json()) as { email?: string; items?: CheckoutItem[] };
+    const { email, name, address, items } = (await req.json()) as {
+      email?: string;
+      name?: string;
+      address?: string;
+      items?: CheckoutItem[];
+    };
 
     if (!email || !isValidEmail(email)) {
       return NextResponse.json({ error: 'A valid email address is required' }, { status: 400 });
+    }
+
+    if (!name?.trim() || !address?.trim()) {
+      return NextResponse.json({ error: 'Name and delivery address are required' }, { status: 400 });
     }
 
     const productItems = Array.isArray(items)
@@ -105,9 +114,21 @@ export async function POST(req: NextRequest) {
         email,
         amount: Math.round(amount * 100),
         currency: 'NGN',
-        callback_url: `${origin}/shop`,
+        callback_url: `${origin}/payment/success`,
         metadata: {
+          customer_name: name.trim(),
+          delivery_address: address.trim(),
           custom_fields: [
+            {
+              display_name: 'Customer Name',
+              variable_name: 'customer_name',
+              value: name.trim(),
+            },
+            {
+              display_name: 'Delivery Address',
+              variable_name: 'delivery_address',
+              value: address.trim(),
+            },
             {
               display_name: 'Order Items',
               variable_name: 'order_items',

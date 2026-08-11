@@ -12,7 +12,9 @@ function cleanPrice(raw: string): number {
 }
 
 export default function CartSidebar() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
   const [checkoutError, setCheckoutError] = useState('');
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const {
@@ -43,13 +45,18 @@ export default function CartSidebar() {
       return;
     }
 
+    if (!name.trim() || !address.trim()) {
+      setCheckoutError('Enter your name and delivery address.');
+      return;
+    }
+
     setIsCheckingOut(true);
 
     try {
       const res = await fetch('/api/paystack/initialize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, items: checkoutItems }),
+        body: JSON.stringify({ name, email, address, items: checkoutItems }),
       });
       const data = await res.json();
 
@@ -173,11 +180,27 @@ export default function CartSidebar() {
             </div>
 
             <input
+              type="text"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="Full name"
+              className="w-full rounded-xl border border-zinc-800 bg-black px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none transition-colors focus:border-red-600"
+            />
+
+            <input
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="Email for receipt"
               className="w-full rounded-xl border border-zinc-800 bg-black px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none transition-colors focus:border-red-600"
+            />
+
+            <textarea
+              value={address}
+              onChange={(event) => setAddress(event.target.value)}
+              placeholder="Delivery address"
+              rows={3}
+              className="w-full resize-none rounded-xl border border-zinc-800 bg-black px-4 py-3 text-sm text-white placeholder:text-zinc-600 outline-none transition-colors focus:border-red-600"
             />
             
             <button
