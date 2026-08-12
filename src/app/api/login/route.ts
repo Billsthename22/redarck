@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
-
+    
     // Compare the provided password with the stored hashed password
     const isPasswordValid = await bcryptjs.compare(password, user.password);
 

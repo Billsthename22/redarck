@@ -8,6 +8,7 @@ import BannerVerse from './components/BannerVerse';
 import Outpost from './components/Outpost';
 import Footer from './components/Footer';
 import Buffer from './components/buffer';
+import { X } from 'lucide-react';
  
 // Reusable shimmer overlay — shown until the media it sits on top of has loaded
 function Skeleton({ show, rounded = '' }: { show: boolean; rounded?: string }) {
@@ -24,6 +25,7 @@ function Skeleton({ show, rounded = '' }: { show: boolean; rounded?: string }) {
 export default function Home() {
   const desktopRef = useRef<HTMLDivElement>(null);
   const mobileRef = useRef<HTMLDivElement>(null);
+  const [showDropModal, setShowDropModal] = useState(false);
   const [desktopInView, setDesktopInView] = useState(false);
   const [mobileInView, setMobileInView] = useState(false);
  
@@ -38,6 +40,10 @@ export default function Home() {
     setLoaded((prev) => (prev[id] ? prev : { ...prev, [id]: true }));
   }, []);
   const isLoaded = (id: string) => !!loaded[id];
+
+  useEffect(() => {
+    setShowDropModal(true);
+  }, []);
  
   useEffect(() => {
     const observerOptions = {
@@ -74,6 +80,73 @@ export default function Home() {
  
   return (
     <main className="min-h-screen bg-black text-white font-sans overflow-x-hidden">
+      {showDropModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-4 py-6 backdrop-blur-md">
+          <div className="relative w-full max-w-4xl overflow-hidden rounded-2xl border border-white/10 bg-[#090909] shadow-2xl">
+            <button
+              onClick={() => setShowDropModal(false)}
+              className="absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/70 text-white transition-colors hover:bg-red-600"
+              aria-label="Close new drop modal"
+            >
+              <X size={20} />
+            </button>
+
+            <div className="grid max-h-[90vh] overflow-y-auto md:grid-cols-[0.8fr_1.2fr]">
+              <div className="flex flex-col justify-center border-b border-white/10 p-6 md:border-b-0 md:border-r md:p-8">
+                <p className="text-[10px] font-black uppercase tracking-[0.5em] text-red-500">
+                  New Drop
+                </p>
+                <h2 className="mt-3 font-[koulen] text-5xl uppercase leading-none text-white md:text-7xl">
+                  Fresh
+                  <br />
+                  Arrivals
+                </h2>
+                <p className="mt-4 max-w-sm text-sm leading-6 text-zinc-400">
+                  Two new pieces are live. Pick your color, size, and checkout from the shop.
+                </p>
+                <Link
+                  href="/shop"
+                  onClick={() => setShowDropModal(false)}
+                  className="mt-6 inline-flex w-fit items-center justify-center rounded-full bg-red-600 px-6 py-3 text-xs font-black uppercase tracking-widest text-black transition-colors hover:bg-red-700"
+                >
+                  Shop the Drop
+                </Link>
+              </div>
+
+              <div className="grid gap-3 p-4 sm:grid-cols-2 md:p-6">
+                {[
+                  { src: '/newrelease3.jpeg', title: 'Drop One' },
+                  { src: '/newrelease4.jpeg', title: 'Drop Two' },
+                ].map((drop) => (
+                  <Link
+                    key={drop.src}
+                    href="/shop"
+                    onClick={() => setShowDropModal(false)}
+                    className="group block"
+                  >
+                    <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-zinc-900">
+                      <Image
+                        src={drop.src}
+                        alt={drop.title}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        sizes="(min-width: 768px) 300px, 50vw"
+                        priority
+                      />
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                        <p className="font-[koulen] text-2xl uppercase leading-none text-white">
+                          {drop.title}
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Buffer />
       <Navbar />
  
