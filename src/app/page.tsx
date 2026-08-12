@@ -185,7 +185,7 @@ export default function Home() {
           >
             <Skeleton show={!isLoaded('new-release-desktop')} />
             <Image
-              src="/newrelease3.jpeg"
+              src="/newrelease4.jpeg"
               alt="New Release"
               fill
               className={`object-cover group-hover:scale-110 transition-transform duration-700 ${
