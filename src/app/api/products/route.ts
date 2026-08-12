@@ -12,6 +12,7 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
 
     const title = formData.get('title') as string;
+    const category = formData.get('category') as string;
     const price = formData.get('price') as string;
     const description = formData.get('description') as string;
     const shirtQuality = formData.get('shirtQuality') as string;
@@ -21,7 +22,7 @@ export async function POST(req: NextRequest) {
     const imageFile = formData.get('image') as File;
     const colorImageFiles = formData.getAll('colorImages') as File[];
 
-    if (!title || !price || !imageFile) {
+    if (!title || !category || !price || !imageFile) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -67,6 +68,7 @@ export async function POST(req: NextRequest) {
     // Save to MongoDB
     const product = await Product.create({
       title,
+      category,
       price: parseFloat(price),
       description: description || '',
       shirtQuality: shirtQuality || '',

@@ -7,6 +7,8 @@ import { Search, Plus, UploadCloud } from "lucide-react";
 import ProductCard from "../components/Productcard";
 import Image from "next/image";
 
+const productCategories = ["Shirt", "Hoodie", "Cap", "Shorts", "Jacket", "Accessories"];
+
 export default function AdminShopPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -16,8 +18,10 @@ export default function AdminShopPage() {
   const [allProducts, setAllProducts] = useState<any[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [colorImageFiles, setColorImageFiles] = useState<File[]>([]);
+  const [modalStep, setModalStep] = useState<"category" | "details">("category");
 
   // Form state
+  const [category, setCategory] = useState("");
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
@@ -50,6 +54,7 @@ export default function AdminShopPage() {
   const handleSave = async () => {
     const formData = new FormData();
     formData.append("title", title);
+    formData.append("category", category);
     formData.append("price", price);
     formData.append("description", description);
     formData.append("shirtQuality", shirtQuality);
@@ -81,6 +86,7 @@ export default function AdminShopPage() {
   };
 
   const resetForm = () => {
+    setCategory("");
     setTitle("");
     setPrice("");
     setDescription("");
@@ -91,6 +97,12 @@ export default function AdminShopPage() {
     setColorPreviews([]);
     setImageFile(null);
     setColorImageFiles([]);
+    setModalStep("category");
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    resetForm();
   };
 
   return (
@@ -113,7 +125,10 @@ export default function AdminShopPage() {
         </div>
 
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            resetForm();
+            setIsModalOpen(true);
+          }}
           className="ml-4 w-10 h-10 rounded-full bg-red-500 flex items-center justify-center text-white"
         >
           <Plus />
@@ -165,163 +180,213 @@ export default function AdminShopPage() {
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/90 flex justify-center items-center z-50">
           <div className="bg-black text-white w-full max-w-lg p-6 rounded-xl shadow-xl relative overflow-y-auto max-h-[90vh]">
-            <h2 className="text-lg font-bold mb-4">Add New Product</h2>
+            {modalStep === "category" ? (
+              <>
+                <p className="text-xs uppercase tracking-[0.4em] text-red-500 font-bold mb-2">
+                  Pick Item
+                </p>
+                <h2 className="text-2xl font-black uppercase italic mb-6">
+                  Choose product category
+                </h2>
 
-            <div className="space-y-4">
-              <input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Title"
-                className="w-full border border-gray-600 bg-zinc-900 px-4 py-2 rounded text-white"
-              />
-              <input
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                placeholder="Price"
-                className="w-full border border-gray-600 bg-zinc-900 px-4 py-2 rounded text-white"
-              />
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Description"
-                className="w-full border border-gray-600 bg-zinc-900 px-4 py-2 rounded text-white"
-              />
+                <div className="grid grid-cols-2 gap-3">
+                  {productCategories.map((item) => (
+                    <button
+                      key={item}
+                      onClick={() => setCategory(item)}
+                      className={`border px-4 py-5 rounded-xl text-sm font-bold uppercase tracking-widest transition-all ${
+                        category === item
+                          ? "border-red-600 bg-red-600 text-black"
+                          : "border-gray-700 bg-zinc-900 text-white hover:border-red-600"
+                      }`}
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
 
-              {/* Shirt Quality */}
-              <select
-                value={shirtQuality}
-                onChange={(e) => setShirtQuality(e.target.value)}
-                className="w-full border border-gray-600 bg-zinc-900 px-4 py-2 rounded text-white"
-              >
-                <option value="">Select Shirt Quality</option>
-                <option value="Standard">Standard</option>
-                <option value="Premium">Premium</option>
-              </select>
-
-              <label className="block mb-2">Select Colors</label>
-              <select
-                multiple
-                value={colors}
-                onChange={(e) => {
-                  const selected = Array.from(
-                    e.target.selectedOptions,
-                    (option) => option.value
-                  );
-                  setColors(selected);
-                }}
-                className="w-full border border-gray-600 bg-zinc-900 px-4 py-2 rounded text-white h-32"
-              >
-                <option value="Black">Black</option>
-                <option value="Red">Red</option>
-                <option value="White">White</option>
-                <option value="Blue">Blue</option>
-                <option value="Green">Green</option>
-                <option value="mustardyellow">mustard yellow</option>
-              </select>
-
-              <label className="block mt-4 mb-2">Select Sizes</label>
-              <select
-                multiple
-                value={sizes}
-                onChange={(e) => {
-                  const selected = Array.from(
-                    e.target.selectedOptions,
-                    (option) => option.value
-                  );
-                  setSizes(selected);
-                }}
-                className="w-full border border-gray-600 bg-zinc-900 px-4 py-2 rounded text-white h-32"
-              >
-                <option value="S">Small (S)</option>
-                <option value="M">Medium (M)</option>
-                <option value="L">Large (L)</option>
-                <option value="XL">Extra Large (XL)</option>
-                <option value="XXL">Double Extra Large (XXL)</option>
-              </select>
-
-              {/* Product Image */}
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Product Image
-                </label>
-                <label className="flex flex-col items-center justify-center border border-dashed border-gray-600 p-6 rounded cursor-pointer text-gray-400 hover:bg-zinc-800">
-                  <UploadCloud className="w-8 h-8 mb-2" />
-                  <span>Click to upload</span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        setPreviewImage(URL.createObjectURL(file));
-                        setImageFile(file);
-                      }
-                    }}
-                  />
-                </label>
-                {previewImage && (
-               <Image
-               src={previewImage}
-               alt="Preview"
-               width={400}
-               height={192} // height for 48 * 4 (Tailwind h-48 = 12rem = 192px)
-               className="mt-2 w-full h-48 object-cover rounded"
-             />
-             
-                )}
-              </div>
-
-              {/* Color Images */}
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Color Images
-                </label>
-                <label className="flex flex-col items-center justify-center border border-dashed border-gray-600 p-6 rounded cursor-pointer text-gray-400 hover:bg-zinc-800">
-                  <UploadCloud className="w-8 h-8 mb-2" />
-                  <span>Click to upload multiple</span>
-                  <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => {
-                      const files = Array.from(e.target.files || []);
-                      setColorImageFiles(files);
-                      setColorPreviews(
-                        files.map((file) => URL.createObjectURL(file))
-                      );
-                    }}
-                  />
-                </label>
-                {colorPreviews.length > 0 && (
-                  <div className="flex gap-2 mt-4 overflow-x-auto">
-                    {colorPreviews.map((src, i) => (
-               <Image
-               key={i}
-               src={src}
-               alt={`color-${i}`}
-               width={64}
-               height={64}
-               className="w-16 h-16 object-cover rounded border border-gray-600"
-             />
-             
-                    ))}
+                <div className="flex justify-end mt-6">
+                  <button
+                    onClick={() => setModalStep("details")}
+                    disabled={!category}
+                    className="bg-red-600 hover:bg-red-700 disabled:bg-zinc-800 disabled:text-zinc-500 disabled:cursor-not-allowed px-6 py-2 rounded text-white font-semibold"
+                  >
+                    Continue
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-start justify-between gap-4 mb-4">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.4em] text-red-500 font-bold">
+                      {category}
+                    </p>
+                    <h2 className="text-lg font-bold">Add New Product</h2>
                   </div>
-                )}
-              </div>
-            </div>
+                  <button
+                    onClick={() => setModalStep("category")}
+                    className="text-xs uppercase tracking-widest text-gray-400 hover:text-white"
+                  >
+                    Change item
+                  </button>
+                </div>
 
-            <div className="flex justify-end mt-6">
-              <button
-                onClick={handleSave}
-                className="bg-red-600 hover:bg-red-700 px-6 py-2 rounded text-white font-semibold"
-              >
-                Save
-              </button>
-            </div>
+                <div className="space-y-4">
+                  <input
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Title"
+                    className="w-full border border-gray-600 bg-zinc-900 px-4 py-2 rounded text-white"
+                  />
+                  <input
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    placeholder="Price"
+                    className="w-full border border-gray-600 bg-zinc-900 px-4 py-2 rounded text-white"
+                  />
+                  <textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Description"
+                    className="w-full border border-gray-600 bg-zinc-900 px-4 py-2 rounded text-white"
+                  />
+
+                  {/* Shirt Quality */}
+                  <select
+                    value={shirtQuality}
+                    onChange={(e) => setShirtQuality(e.target.value)}
+                    className="w-full border border-gray-600 bg-zinc-900 px-4 py-2 rounded text-white"
+                  >
+                    <option value="">Select Shirt Quality</option>
+                    <option value="Standard">Standard</option>
+                    <option value="Premium">Premium</option>
+                  </select>
+
+                  <label className="block mb-2">Select Colors</label>
+                  <select
+                    multiple
+                    value={colors}
+                    onChange={(e) => {
+                      const selected = Array.from(
+                        e.target.selectedOptions,
+                        (option) => option.value
+                      );
+                      setColors(selected);
+                    }}
+                    className="w-full border border-gray-600 bg-zinc-900 px-4 py-2 rounded text-white h-32"
+                  >
+                    <option value="Black">Black</option>
+                    <option value="Red">Red</option>
+                    <option value="White">White</option>
+                    <option value="Blue">Blue</option>
+                    <option value="Green">Green</option>
+                    <option value="mustardyellow">mustard yellow</option>
+                  </select>
+
+                  <label className="block mt-4 mb-2">Select Sizes</label>
+                  <select
+                    multiple
+                    value={sizes}
+                    onChange={(e) => {
+                      const selected = Array.from(
+                        e.target.selectedOptions,
+                        (option) => option.value
+                      );
+                      setSizes(selected);
+                    }}
+                    className="w-full border border-gray-600 bg-zinc-900 px-4 py-2 rounded text-white h-32"
+                  >
+                    <option value="S">Small (S)</option>
+                    <option value="M">Medium (M)</option>
+                    <option value="L">Large (L)</option>
+                    <option value="XL">Extra Large (XL)</option>
+                    <option value="XXL">Double Extra Large (XXL)</option>
+                  </select>
+
+                  {/* Product Image */}
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Product Image
+                    </label>
+                    <label className="flex flex-col items-center justify-center border border-dashed border-gray-600 p-6 rounded cursor-pointer text-gray-400 hover:bg-zinc-800">
+                      <UploadCloud className="w-8 h-8 mb-2" />
+                      <span>Click to upload</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setPreviewImage(URL.createObjectURL(file));
+                            setImageFile(file);
+                          }
+                        }}
+                      />
+                    </label>
+                    {previewImage && (
+                      <Image
+                        src={previewImage}
+                        alt="Preview"
+                        width={400}
+                        height={192}
+                        className="mt-2 w-full h-48 object-cover rounded"
+                      />
+                    )}
+                  </div>
+
+                  {/* Color Images */}
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Color Images
+                    </label>
+                    <label className="flex flex-col items-center justify-center border border-dashed border-gray-600 p-6 rounded cursor-pointer text-gray-400 hover:bg-zinc-800">
+                      <UploadCloud className="w-8 h-8 mb-2" />
+                      <span>Click to upload multiple</span>
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const files = Array.from(e.target.files || []);
+                          setColorImageFiles(files);
+                          setColorPreviews(
+                            files.map((file) => URL.createObjectURL(file))
+                          );
+                        }}
+                      />
+                    </label>
+                    {colorPreviews.length > 0 && (
+                      <div className="flex gap-2 mt-4 overflow-x-auto">
+                        {colorPreviews.map((src, i) => (
+                          <Image
+                            key={i}
+                            src={src}
+                            alt={`color-${i}`}
+                            width={64}
+                            height={64}
+                            className="w-16 h-16 object-cover rounded border border-gray-600"
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex justify-end mt-6">
+                  <button
+                    onClick={handleSave}
+                    className="bg-red-600 hover:bg-red-700 px-6 py-2 rounded text-white font-semibold"
+                  >
+                    Save
+                  </button>
+                </div>
+              </>
+            )}
             <button
-              onClick={() => setIsModalOpen(false)}
+              onClick={closeModal}
               className="absolute top-3 right-4 text-gray-500 text-xl"
             >
               &times;

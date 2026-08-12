@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const ProductSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
+    category: { type: String },
     price: { type: String, required: true },
     description: { type: String },
     shirtQuality: { type: String }, // Optional shirt quality field
