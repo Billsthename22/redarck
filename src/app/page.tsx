@@ -115,7 +115,7 @@ export default function Home() {
 
               <div className="grid gap-3 p-4 sm:grid-cols-2 md:p-6">
                 {[
-                  { src: '/newrelease3.jpeg', title: 'Drop One' },
+                  { src: '/eof.JPG', title: 'Drop One' },
                   { src: '/newrelease4.jpeg', title: 'Drop Two' },
                 ].map((drop) => (
                   <Link
