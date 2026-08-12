@@ -1,15 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-
 import Adminnavbar from "@/app/components/Adminnavbar";
 import { useState, useEffect } from "react";
 import { Search, Plus, UploadCloud } from "lucide-react";
 import ProductCard from "../components/Productcard";
 import Image from "next/image";
-
 const productCategories = ["Shirt", "Hoodie", "Cap", "Shorts", "Jacket", "Accessories"];
 const categoriesWithQuality = ["Shirt", "Hoodie"];
-
 export default function AdminShopPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
