@@ -3,9 +3,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcryptjs from 'bcryptjs'; // If you're using hashed passwords
 import { connectDB } from '../lib/mongodb'
 import Admin from '../model/Admin';
+import { rateLimit } from '../lib/rateLimit';
 
 export async function POST(request: NextRequest) {
   try {
+    const limited = rateLimit(request, {
+      keyPrefix: 'login',
+      limit: 5,
+      windowMs: 15 * 60 * 1000,
+    });
+    if (limited) return limited;
+
     const { email, password } = await request.json();
 
     // Validate input

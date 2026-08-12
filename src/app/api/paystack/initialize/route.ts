@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { connectDB } from '@/app/api/lib/mongodb';
 import Product from '@/app/api/model/Product';
+import { rateLimit } from '@/app/api/lib/rateLimit';
 
 export const runtime = 'nodejs';
 
@@ -38,6 +39,13 @@ const isValidEmail = (email: string): boolean => {
 
 export async function POST(req: NextRequest) {
   try {
+    const limited = rateLimit(req, {
+      keyPrefix: 'paystack-initialize',
+      limit: 10,
+      windowMs: 10 * 60 * 1000,
+    });
+    if (limited) return limited;
+
     const secretKey = process.env.PAYSTACK_SECRET_KEY;
 
     if (!secretKey) {

@@ -1,13 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { Resend} from 'resend';
 import { connectDB } from '@/app/api/lib/mongodb';
 import contact from '../model/contact';
+import { rateLimit } from '@/app/api/lib/rateLimit';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    const limited = rateLimit(request, {
+      keyPrefix: 'contact',
+      limit: 5,
+      windowMs: 10 * 60 * 1000,
+    });
+    if (limited) return limited;
+
     await connectDB();
     
     const { name, email, message } = await request.json();

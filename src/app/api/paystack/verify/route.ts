@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/app/api/lib/mongodb';
 import Order from '@/app/api/model/Order';
+import { rateLimit } from '@/app/api/lib/rateLimit';
 
 export const runtime = 'nodejs';
 
@@ -17,6 +18,13 @@ type VerifiedItem = {
 
 export async function GET(req: NextRequest) {
   try {
+    const limited = rateLimit(req, {
+      keyPrefix: 'paystack-verify',
+      limit: 30,
+      windowMs: 10 * 60 * 1000,
+    });
+    if (limited) return limited;
+
     const secretKey = process.env.PAYSTACK_SECRET_KEY;
     const reference = req.nextUrl.searchParams.get('reference');
 

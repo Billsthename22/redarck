@@ -2,11 +2,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/app/api/lib/mongodb';
 import Product from '@/app/api/model/Product';
 import cloudinary from '../lib/cloudinary';
+import { rateLimit } from '@/app/api/lib/rateLimit';
 
 export const runtime = 'nodejs'; // ensure Node runtime, not Edge
 
 export async function POST(req: NextRequest) {
   try {
+    const limited = rateLimit(req, {
+      keyPrefix: 'products-create',
+      limit: 20,
+      windowMs: 60 * 60 * 1000,
+    });
+    if (limited) return limited;
+
     await connectDB();
 
     const formData = await req.formData();

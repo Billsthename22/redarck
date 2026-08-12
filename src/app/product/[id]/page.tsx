@@ -143,6 +143,27 @@ export default function ProductPage() {
     });
   };
 
+  const handleCustomSizeOrder = () => {
+    if (!product) return;
+    if (product.colors?.length > 0 && !selectedColor) {
+      alert('Please select color');
+      return;
+    }
+
+    const whatsappNumber = '2348110749341';
+    const details = [
+      `Product: ${product.title}`,
+      `Price: ₦${finalPrice.toLocaleString()}`,
+      `Color: ${selectedColor || 'Custom / Not selected'}`,
+      `Base size selected: ${selectedSize || 'Custom size'}`,
+      `Quality: ${shirtQuality}`,
+      `Product link: ${window.location.href}`,
+    ];
+    const message = `Hello Redack Nation, I'd like to order a custom size.\n\n${details.join('\n')}\n\nMy measurements are:`;
+
+    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank');
+  };
+
   if (loading) return (
     <div className="bg-black min-h-screen flex flex-col items-center justify-center space-y-4">
       <div className="w-12 h-12 border-2 border-red-500 border-t-transparent rounded-full animate-spin" />
@@ -334,16 +355,25 @@ export default function ProductPage() {
             </div>
 
             {/* Final Action */}
-            <button
-              onClick={handleAddToCart}
-              className="w-full relative group overflow-hidden bg-white text-black py-5 rounded-xl font-black text-xs uppercase tracking-[0.5em] transition-all hover:scale-[1.01] active:scale-[0.99]"
-            >
-              <span className="relative z-10">Add to Cart</span>
-              <div className="absolute inset-0 bg-red-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-              <span className="absolute inset-0 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 z-20 transition-opacity duration-300">
-                Confirm Order
-              </span>
-            </button>
+            <div className="space-y-3">
+              <button
+                onClick={handleAddToCart}
+                className="w-full relative group overflow-hidden bg-white text-black py-5 rounded-xl font-black text-xs uppercase tracking-[0.5em] transition-all hover:scale-[1.01] active:scale-[0.99]"
+              >
+                <span className="relative z-10">Add to Cart</span>
+                <div className="absolute inset-0 bg-red-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                <span className="absolute inset-0 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 z-20 transition-opacity duration-300">
+                  Confirm Order
+                </span>
+              </button>
+
+              <button
+                onClick={handleCustomSizeOrder}
+                className="w-full border border-zinc-800 bg-zinc-950 text-white py-4 rounded-xl font-black text-xs uppercase tracking-[0.35em] transition-all hover:border-red-600 hover:text-red-500 active:scale-[0.99]"
+              >
+                Custom Size
+              </button>
+            </div>
           </div>
         </div>
 

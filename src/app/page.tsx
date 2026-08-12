@@ -92,7 +92,7 @@ export default function Home() {
             </button>
 
             <div className="grid max-h-[90vh] overflow-y-auto md:grid-cols-[0.8fr_1.2fr]">
-              <div className="flex flex-col justify-center border-b border-white/10 p-6 md:border-b-0 md:border-r md:p-8">
+              <div className="hidden flex-col justify-center border-b border-white/10 p-6 md:flex md:border-b-0 md:border-r md:p-8">
                 <p className="text-[10px] font-black uppercase tracking-[0.5em] text-red-500">
                   New Drop
                 </p>

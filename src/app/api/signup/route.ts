@@ -3,9 +3,17 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { connectDB } from '@/app/api/lib/mongodb';
 import Admin from '@/app/api/model/Admin';
+import { rateLimit } from '@/app/api/lib/rateLimit';
 
 export async function POST(request: NextRequest) {
   try {
+    const limited = rateLimit(request, {
+      keyPrefix: 'signup',
+      limit: 3,
+      windowMs: 60 * 60 * 1000,
+    });
+    if (limited) return limited;
+
     await connectDB();
 
     const { fullName, email, address, password } = await request.json();

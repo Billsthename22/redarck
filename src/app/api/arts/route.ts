@@ -4,10 +4,18 @@ import Arts from '../model/Arts';
 import { writeFile } from 'fs/promises';
 import path from 'path';
 import { mkdir } from 'fs/promises';
+import { rateLimit } from '@/app/api/lib/rateLimit';
 
 // POST: Upload and save product
 export async function POST(req: NextRequest) {
   try {
+    const limited = rateLimit(req, {
+      keyPrefix: 'arts-create',
+      limit: 20,
+      windowMs: 60 * 60 * 1000,
+    });
+    if (limited) return limited;
+
     await connectDB();
     
     // Parse form data using NextJS built-in FormData
