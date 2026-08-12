@@ -8,6 +8,7 @@ import ProductCard from "../components/Productcard";
 import Image from "next/image";
 
 const productCategories = ["Shirt", "Hoodie", "Cap", "Shorts", "Jacket", "Accessories"];
+const categoriesWithQuality = ["Shirt", "Hoodie"];
 
 export default function AdminShopPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -53,11 +54,13 @@ export default function AdminShopPage() {
 
   const handleSave = async () => {
     const formData = new FormData();
+    const savedQuality = categoriesWithQuality.includes(category) ? shirtQuality : "";
+
     formData.append("title", title);
     formData.append("category", category);
     formData.append("price", price);
     formData.append("description", description);
-    formData.append("shirtQuality", shirtQuality);
+    formData.append("shirtQuality", savedQuality);
     formData.append("colors", colors.join(","));
     formData.append("sizes", sizes.join(","));
 
@@ -252,16 +255,17 @@ export default function AdminShopPage() {
                     className="w-full border border-gray-600 bg-zinc-900 px-4 py-2 rounded text-white"
                   />
 
-                  {/* Shirt Quality */}
-                  <select
-                    value={shirtQuality}
-                    onChange={(e) => setShirtQuality(e.target.value)}
-                    className="w-full border border-gray-600 bg-zinc-900 px-4 py-2 rounded text-white"
-                  >
-                    <option value="">Select Shirt Quality</option>
-                    <option value="Standard">Standard</option>
-                    <option value="Premium">Premium</option>
-                  </select>
+                  {categoriesWithQuality.includes(category) && (
+                    <select
+                      value={shirtQuality}
+                      onChange={(e) => setShirtQuality(e.target.value)}
+                      className="w-full border border-gray-600 bg-zinc-900 px-4 py-2 rounded text-white"
+                    >
+                      <option value="">Select Shirt Quality</option>
+                      <option value="Standard">Standard</option>
+                      <option value="Premium">Premium</option>
+                    </select>
+                  )}
 
                   <label className="block mb-2">Select Colors</label>
                   <select
