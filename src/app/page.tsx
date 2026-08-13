@@ -28,7 +28,6 @@ export default function Home() {
   const [showDropModal, setShowDropModal] = useState(false);
   const [desktopInView, setDesktopInView] = useState(false);
   const [mobileInView, setMobileInView] = useState(false);
- 
   // Tracks whether the hero videos have actually loaded a frame yet,
   // so we can keep the placeholder visible (crossfade) instead of a blank flash
   const [desktopVideoLoaded, setDesktopVideoLoaded] = useState(false);
@@ -81,7 +80,8 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white font-sans overflow-x-hidden">
       {showDropModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-4 py-6 backdrop-blur-md">
+        /* Added `hidden sm:flex` here so the modal never displays on mobile screens */
+        <div className="hidden sm:flex fixed inset-0 z-[100] items-center justify-center bg-black/80 px-4 py-6 backdrop-blur-md">
           <div className="relative w-full max-w-4xl overflow-hidden rounded-2xl border border-white/10 bg-[#090909] shadow-2xl">
             <button
               onClick={() => setShowDropModal(false)}
@@ -150,7 +150,7 @@ export default function Home() {
       <Buffer />
       <Navbar />
  
-      {/* ✅ Responsive Hero Section with Lazy Loaded Videos */}
+      {/* Responsive Hero Section with Lazy Loaded Videos */}
       <section className="relative w-full bg-black px-6 pt-[100px] pb-12">
  
         {/* Desktop Video Section */}
@@ -575,4 +575,3 @@ export default function Home() {
     </main>
   );
 }
- 
