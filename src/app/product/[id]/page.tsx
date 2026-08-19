@@ -11,6 +11,7 @@ import Footer from '@/app/components/Footer';
 interface ProductType {
   _id: string;
   title: string;
+  category?: string;
   price: string;
   description: string;
   imageSrc: string;
@@ -83,7 +84,10 @@ export default function ProductPage() {
   };
 
   const basePrice = product ? parsePrice(product.price) : 0;
-  const finalPrice = shirtQuality === 'Premium' ? basePrice + 7000 : basePrice;
+  const productCategory = product?.category?.toLowerCase() || '';
+  const isCap = productCategory === 'cap' || (!productCategory && product?.title.toLowerCase().includes('cap'));
+  const supportsQuality = productCategory === 'shirt' || productCategory === 'hoodie';
+  const finalPrice = supportsQuality && shirtQuality === 'Premium' ? basePrice + 7000 : basePrice;
 
   // Aggregate main image with secondary views safely
   const allImages = product 
@@ -123,8 +127,12 @@ export default function ProductPage() {
 
   const handleAddToCart = () => {
     if (!product) return;
-    if (!selectedSize || !selectedColor) {
-      alert('Please select size and color');
+    if (!isCap && product.sizes?.length > 0 && !selectedSize) {
+      alert('Please select size');
+      return;
+    }
+    if (product.colors?.length > 0 && !selectedColor) {
+      alert('Please select color');
       return;
     }
 
@@ -136,8 +144,8 @@ export default function ProductPage() {
       image: product.imageSrc,
       imageSrc: product.imageSrc,
       selectedColor,
-      selectedSize,
-      shirtQuality,
+      selectedSize: isCap ? '' : selectedSize,
+      shirtQuality: supportsQuality ? shirtQuality : undefined,
       productType: 'product',
       quantity: 1,
     });
@@ -275,28 +283,30 @@ export default function ProductPage() {
             </section>
 
             {/* Quality Select */}
-            <div className="space-y-3">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-zinc-500 font-bold">Selection Grade</p>
-              <div className="grid grid-cols-2 gap-2 bg-zinc-900/50 p-1 rounded-xl border border-zinc-800">
-                {['Standard', 'Premium'].map((q) => (
-                  <button
-                    key={q}
-                    onClick={() => setShirtQuality(q as 'Standard' | 'Premium')}
-                    className={`py-2.5 px-4 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${
-                      shirtQuality === q 
-                      ? 'bg-zinc-800 text-white shadow-xl' 
-                      : 'text-zinc-500 hover:text-zinc-300'
-                    }`}
-                  >
-                    {q}
-                  </button>
-                ))}
+            {supportsQuality && (
+              <div className="space-y-3">
+                <p className="text-[10px] uppercase tracking-[0.3em] text-zinc-500 font-bold">Selection Grade</p>
+                <div className="grid grid-cols-2 gap-2 bg-zinc-900/50 p-1 rounded-xl border border-zinc-800">
+                  {['Standard', 'Premium'].map((q) => (
+                    <button
+                      key={q}
+                      onClick={() => setShirtQuality(q as 'Standard' | 'Premium')}
+                      className={`py-2.5 px-4 rounded-lg text-xs font-bold uppercase tracking-widest transition-all ${
+                        shirtQuality === q 
+                        ? 'bg-zinc-800 text-white shadow-xl' 
+                        : 'text-zinc-500 hover:text-zinc-300'
+                      }`}
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Size & Color Blocks */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {product.sizes?.length > 0 && (
+              {!isCap && product.sizes?.length > 0 && (
                 <div className="space-y-3">
                   <p className="text-[10px] uppercase tracking-[0.3em] text-zinc-500 font-bold">Size</p>
                   <div className="flex flex-wrap gap-2">
@@ -367,12 +377,14 @@ export default function ProductPage() {
                 </span>
               </button>
 
-              <button
-                onClick={handleCustomSizeOrder}
-                className="w-full border border-zinc-800 bg-zinc-950 text-white py-4 rounded-xl font-black text-xs uppercase tracking-[0.35em] transition-all hover:border-red-600 hover:text-red-500 active:scale-[0.99]"
-              >
-                Custom Size
-              </button>
+              {!isCap && (
+                <button
+                  onClick={handleCustomSizeOrder}
+                  className="w-full border border-zinc-800 bg-zinc-950 text-white py-4 rounded-xl font-black text-xs uppercase tracking-[0.35em] transition-all hover:border-red-600 hover:text-red-500 active:scale-[0.99]"
+                >
+                  Custom Size
+                </button>
+              )}
             </div>
           </div>
         </div>
