@@ -49,25 +49,32 @@ export default function AdminDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const fetchOrders = async () => {
-    setLoading(true);
-    setError('');
+const fetchOrders = async () => {
+  setLoading(true);
+  setError('');
 
-    try {
-      const res = await fetch('/api/orders');
-      const data = await res.json();
+  try {
+    const res = await fetch('/api/orders', {
+      method: 'GET',
+      cache: 'no-store',
+    });
 
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to fetch orders');
-      }
+    const data = await res.json();
 
-      setOrders(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch orders');
-    } finally {
-      setLoading(false);
+    if (!res.ok) {
+      throw new Error(data.error || 'Failed to fetch orders');
     }
-  };
+
+    console.log('Fetched orders:', data);
+
+    setOrders(Array.isArray(data) ? data : []);
+  } catch (err) {
+    console.error('Admin orders error:', err);
+    setError(err instanceof Error ? err.message : 'Failed to fetch orders');
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchOrders();
