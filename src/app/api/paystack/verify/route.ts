@@ -16,6 +16,33 @@ type VerifiedItem = {
   lineTotal: number;
 };
 
+type PaystackAuthorization = {
+  channel?: string;
+  bank?: string;
+  account_name?: string;
+  account_number?: string;
+  sender_bank?: string;
+  receiver_bank?: string;
+  receiver_bank_account_number?: string;
+};
+
+const buildPaymentDetails = (data: {
+  channel?: string;
+  authorization?: PaystackAuthorization;
+}) => {
+  const authorization = data.authorization || {};
+
+  return {
+    channel: authorization.channel || data.channel || '',
+    bank: authorization.bank || '',
+    accountName: authorization.account_name || '',
+    accountNumber: authorization.account_number || '',
+    senderBank: authorization.sender_bank || '',
+    receiverBank: authorization.receiver_bank || '',
+    receiverAccountNumber: authorization.receiver_bank_account_number || '',
+  };
+};
+
 export async function GET(req: NextRequest) {
   try {
     const limited = rateLimit(req, {
@@ -39,7 +66,10 @@ export async function GET(req: NextRequest) {
     await connectDB();
 
     const existingOrder = await Order.findOne({ reference });
-    if (existingOrder) {
+    if (
+      existingOrder?.paymentDetails &&
+      Object.values(existingOrder.paymentDetails.toObject?.() || existingOrder.paymentDetails).some(Boolean)
+    ) {
       return NextResponse.json({ order: existingOrder });
     }
 
@@ -60,6 +90,13 @@ export async function GET(req: NextRequest) {
     const data = payload.data;
     const metadata = data.metadata || {};
     const items = Array.isArray(metadata.items) ? metadata.items : [];
+    const paymentDetails = buildPaymentDetails(data);
+
+    if (existingOrder) {
+      existingOrder.paymentDetails = paymentDetails;
+      await existingOrder.save();
+      return NextResponse.json({ order: existingOrder });
+    }
 
     const order = await Order.create({
       reference: data.reference,
@@ -69,6 +106,7 @@ export async function GET(req: NextRequest) {
       amountPaid: Number(data.amount || 0) / 100,
       currency: data.currency || 'NGN',
       status: data.status,
+      paymentDetails,
       paidAt: data.paid_at ? new Date(data.paid_at) : new Date(),
       items: items.map((item: VerifiedItem) => ({
         productId: item.id,

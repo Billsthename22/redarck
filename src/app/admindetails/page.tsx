@@ -24,6 +24,15 @@ type Order = {
   amountPaid: number;
   currency: string;
   status: string;
+  paymentDetails?: {
+    channel?: string;
+    bank?: string;
+    accountName?: string;
+    accountNumber?: string;
+    senderBank?: string;
+    receiverBank?: string;
+    receiverAccountNumber?: string;
+  };
   paidAt?: string;
   createdAt: string;
   items: OrderItem[];
@@ -90,6 +99,13 @@ export default function AdminDetailsPage() {
       'Email',
       'Address',
       'Amount Paid',
+      'Payment Channel',
+      'Bank',
+      'Account Name',
+      'Account Number',
+      'Sender Bank',
+      'Receiver Bank',
+      'Receiver Account Number',
       'Status',
       'Product',
       'Size',
@@ -108,6 +124,13 @@ export default function AdminDetailsPage() {
         order.email,
         order.address,
         order.amountPaid,
+        order.paymentDetails?.channel,
+        order.paymentDetails?.bank,
+        order.paymentDetails?.accountName,
+        order.paymentDetails?.accountNumber,
+        order.paymentDetails?.senderBank,
+        order.paymentDetails?.receiverBank,
+        order.paymentDetails?.receiverAccountNumber,
         order.status,
         item.title,
         item.selectedSize,
@@ -197,6 +220,7 @@ export default function AdminDetailsPage() {
                   <th className="px-4 py-4">Customer</th>
                   <th className="px-4 py-4">Address</th>
                   <th className="px-4 py-4">Products</th>
+                  <th className="px-4 py-4">Payment</th>
                   <th className="px-4 py-4">Amount</th>
                   <th className="px-4 py-4">Reference</th>
                   <th className="px-4 py-4">Paid</th>
@@ -224,6 +248,23 @@ export default function AdminDetailsPage() {
                           </div>
                         ))}
                       </div>
+                    </td>
+                    <td className="px-4 py-5 text-xs text-zinc-400">
+                      <p className="font-bold uppercase text-white">
+                        {order.paymentDetails?.channel || 'N/A'}
+                      </p>
+                      {[
+                        order.paymentDetails?.bank && `Bank: ${order.paymentDetails.bank}`,
+                        order.paymentDetails?.accountName && `Account: ${order.paymentDetails.accountName}`,
+                        order.paymentDetails?.accountNumber && `Acct No: ${order.paymentDetails.accountNumber}`,
+                        order.paymentDetails?.senderBank && `Sender: ${order.paymentDetails.senderBank}`,
+                        order.paymentDetails?.receiverBank && `Receiver: ${order.paymentDetails.receiverBank}`,
+                        order.paymentDetails?.receiverAccountNumber && `Receiver No: ${order.paymentDetails.receiverAccountNumber}`,
+                      ]
+                        .filter(Boolean)
+                        .map((detail) => (
+                          <p key={detail} className="mt-1">{detail}</p>
+                        ))}
                     </td>
                     <td className="px-4 py-5 font-black text-red-500">₦{order.amountPaid.toLocaleString()}</td>
                     <td className="px-4 py-5 font-mono text-xs text-zinc-400">{order.reference}</td>
